@@ -1,0 +1,17 @@
+[
+  {
+    "title": "Список табелей",
+    "link": "/timesheet",
+    "icon": "list"
+  },
+  {
+    "title": "Добавить табель",
+    "link": "/timesheet/add",
+    "icon": "playlist_add"
+  },
+  {
+    "title": "Список сотрудников",
+    "link": "/users",
+    "icon": "supervisor_account"
+  }
+]
