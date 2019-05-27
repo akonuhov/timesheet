@@ -37,14 +37,14 @@
             </v-btn>
             <br><br><br>
             <v-select
-              v-model="type"
-              :items="typeOptions"
-              label="Type"
+              v-model="employee"
+              :items="getEmployee"
+              label="Работник"
             ></v-select>
             <v-select
-              v-model="weekdays"
-              :items="weekdaysOptions"
-              label="Weekdays"
+              v-model="type"
+              :items="typeOptions"
+              label="Тип"
             ></v-select>
           </v-flex>
           <v-flex
@@ -68,13 +68,38 @@
                 :interval-height="intervals.height"
                 :show-interval-label="showIntervalLabel"
                 :color="color"
+                locale="ru"
+                @click:day="dialogTablesheet = !dialogTablesheet"
               >
+                <template v-slot:day="{ date }">
+                  {{ date }}
+                </template>
               </v-calendar>
             </v-sheet>
           </v-flex>
         </v-layout>
       </v-container>
     </v-card>
+    <v-dialog v-model="dialogTablesheet" persistent max-width="600px">
+      <v-card>
+        <v-card-title>
+          <span class="headline">Добавить график</span>
+        </v-card-title>
+        <v-card-text>
+          <v-flex>
+            <v-select
+              :items="getStatusDay"
+              label="Статус"
+            ></v-select>
+          </v-flex>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" flat @click="dialogTablesheet = false">Отмена</v-btn>
+          <v-btn color="blue darken-1" flat @click="dialogTablesheet = false">Добавить</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </layout-main>
 </template>
 
@@ -101,11 +126,12 @@ export default {
     nowMenu: false,
     minWeeks: 1,
     now: null,
+    employee: ['Иванов Иван Иванович'],
     type: 'month',
     typeOptions: [
       { text: 'День', value: 'day' },
       { text: 'Неделя', value: 'week' },
-      { text: 'Мемяц', value: 'month' }
+      { text: 'Месяц', value: 'month' }
     ],
     weekdays: weekdaysDefault,
     weekdaysOptions: [
@@ -117,8 +143,18 @@ export default {
     intervals: intervalsDefault,
     maxDays: 7,
     styleInterval: 'default',
-    color: 'primary'
+    color: 'primary',
+    dialogTablesheet: false,
+    selectStatusDay: ['Рабочий', 'Командировка', 'Выходной']
   }),
+  computed: {
+    getEmployee () {
+      return this.employee
+    },
+    getStatusDay () {
+      return this.selectStatusDay
+    }
+  },
   methods: {
     showIntervalLabel (interval) {
       return interval.minute === 0
