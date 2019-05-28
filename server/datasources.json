@@ -1,8 +1,8 @@
 {
   "timesheet": {
-    "host": "87.249.18.179",
+    "host": "timesheet.gidapteka.ru",
     "port": 5432,
-    "url": "",
+    "url": "postgres://postgres:hf,jxbqnf,tkm@timesheet.gidapteka.ru:5432/timesheet?ssl=false",
     "database": "timesheet",
     "password": "hf,jxbqnf,tkm",
     "name": "timesheet",
