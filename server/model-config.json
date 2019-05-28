@@ -14,25 +14,25 @@
     ]
   },
   "User": {
-    "dataSource": "db"
+    "dataSource": "timesheet"
   },
   "AccessToken": {
-    "dataSource": "db",
+    "dataSource": "timesheet",
     "public": false
   },
   "ACL": {
-    "dataSource": "db",
+    "dataSource": "timesheet",
     "public": false
   },
   "RoleMapping": {
-    "dataSource": "db",
+    "dataSource": "timesheet",
     "public": false,
     "options": {
       "strictObjectIDCoercion": true
     }
   },
   "Role": {
-    "dataSource": "db",
+    "dataSource": "timesheet",
     "public": false
   }
 }

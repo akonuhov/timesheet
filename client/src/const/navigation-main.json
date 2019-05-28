@@ -11,7 +11,7 @@
   },
   {
     "title": "Список сотрудников",
-    "link": "/users",
+    "link": "/workers",
     "icon": "supervisor_account"
   }
 ]

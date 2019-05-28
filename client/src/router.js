@@ -8,24 +8,41 @@ export default new Router({
   base: process.env.BASE_URL,
   routes: [
     {
+      path: '/authorization',
+      name: 'PageAuthorization',
+      component: () => import('./pages/Authorization.vue')
+    },
+    {
       path: '/',
       name: 'PageHome',
-      redirect: '/timesheet'
+      redirect: '/timesheet',
+      meta: {
+        authenticated: true
+      }
     },
     {
       path: '/timesheet',
       name: 'PageTimesheet',
-      component: () => import('./pages/Timesheet.vue')
+      component: () => import('./pages/Timesheet.vue'),
+      meta: {
+        authenticated: true
+      }
     },
     {
       path: '/timesheet/add',
       name: 'PageTimesheetAdd',
-      component: () => import('./pages/TimesheetAdd.vue')
+      component: () => import('./pages/TimesheetAdd.vue'),
+      meta: {
+        authenticated: true
+      }
     },
     {
-      path: '/authorization',
-      name: 'PageAuthorization',
-      component: () => import('./pages/Authorization.vue')
+      path: 'workers',
+      name: 'PageWorkers',
+      component: () => import('./pages/Workers.vue'),
+      meta: {
+        authenticated: true
+      }
     }
   ]
 })

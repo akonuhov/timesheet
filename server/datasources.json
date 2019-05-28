@@ -1,6 +1,12 @@
 {
-  "db": {
-    "name": "db",
-    "connector": "memory"
+  "timesheet": {
+    "host": "87.249.18.179",
+    "port": 5432,
+    "url": "",
+    "database": "timesheet",
+    "password": "hf,jxbqnf,tkm",
+    "name": "timesheet",
+    "user": "postgres",
+    "connector": "postgresql"
   }
 }

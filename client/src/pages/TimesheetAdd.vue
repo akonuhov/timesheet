@@ -92,6 +92,16 @@
               label="Статус"
             ></v-select>
           </v-flex>
+          <v-flex>
+            <v-time-picker v-model="workTimeStart"
+                           width="268"
+                           format="24hr"></v-time-picker>
+          </v-flex>
+          <v-flex>
+            <v-time-picker v-model="workTimeEnd"
+                           width="200"
+                           format="24hr"></v-time-picker>
+          </v-flex>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -114,7 +124,7 @@ const intervalsDefault = {
   height: 40
 }
 export default {
-  name: 'PageTimesheet',
+  name: 'PageTimesheetAdd',
   components: {
     LayoutMain: LayoutMain
   },
@@ -145,7 +155,9 @@ export default {
     styleInterval: 'default',
     color: 'primary',
     dialogTablesheet: false,
-    selectStatusDay: ['Рабочий', 'Командировка', 'Выходной']
+    selectStatusDay: ['Рабочий', 'Командировка', 'Выходной'],
+    workTimeStart: null,
+    workTimeEnd: null
   }),
   computed: {
     getEmployee () {
