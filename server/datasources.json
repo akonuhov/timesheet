@@ -2,7 +2,7 @@
   "timesheet": {
     "host": "pgs.5dd.ru",
     "port": 5432,
-    "url": "postgres://postgres:hs9^bdJsde@pgs.5dd.ru:5432/tabel?ssl=false",
+    "url": "postgres://sqladmin:hs9^bdJsde@pgs.5dd.ru:5432/tabel?ssl=false",
     "database": "tabel",
     "password": "hs9^bdJsde",
     "name": "timesheet",
