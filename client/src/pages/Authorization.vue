@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app class="bg-authorization">
     <v-content>
       <v-container fluid
                    fill-height>
@@ -54,6 +54,15 @@ export default {
 }
 </script>
 
-<style lang="sass">
-
+<style lang="scss">
+.application {
+  &.bg {
+    &-authorization {
+      background-image: url("../../public/img/bg/authorization.jpg");
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: center;
+    }
+  }
+}
 </style>
