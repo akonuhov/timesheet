@@ -6,5 +6,7 @@
  */
 
 export default {
-  authenticated: false
+  status: null,
+  token: localStorage.getItem('token') || null,
+  userId: null
 }

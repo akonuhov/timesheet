@@ -11,12 +11,12 @@
             <v-card class="elevation-12">
               <v-toolbar dark
                          color="teal lighten-1">
-                <v-toolbar-title>Авторизация</v-toolbar-title>
+                <v-toolbar-title>Учетный табель. Авторизация</v-toolbar-title>
               </v-toolbar>
               <v-card-text>
                 <v-form>
                   <v-text-field prepend-icon="person"
-                                v-model="login"
+                                v-model="username"
                                 label="Логин"
                                 type="text"></v-text-field>
                   <v-text-field prepend-icon="lock"
@@ -29,7 +29,9 @@
               </v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn dark color="teal lighten-1">Войти</v-btn>
+                <v-btn dark
+                       color="teal lighten-1"
+                       @click="onClickLoginEnter">Войти</v-btn>
               </v-card-actions>
             </v-card>
           </v-flex>
@@ -43,13 +45,18 @@
 export default {
   name: 'PageAuthorization',
   data: () => ({
-    login: null,
+    username: null,
     password: null,
-    drawer: null,
     showPassword: false
   }),
-  props: {
-    source: String
+  methods: {
+    onClickLoginEnter () {
+      let username = this.username
+      let password = this.password
+      this.$store.dispatch('Authorization/login', { username, password }).then(() => {
+        this.$router.push('/')
+      })
+    }
   }
 }
 </script>

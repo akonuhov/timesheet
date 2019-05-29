@@ -5,13 +5,13 @@
     "icon": "list"
   },
   {
-    "title": "Добавить табель",
-    "link": "/timesheet/add",
-    "icon": "playlist_add"
-  },
-  {
     "title": "Список сотрудников",
     "link": "/workers",
+    "icon": "supervisor_account"
+  },
+  {
+    "title": "Список подразделений",
+    "link": "/subdivision",
     "icon": "supervisor_account"
   }
 ]

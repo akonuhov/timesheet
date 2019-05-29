@@ -6,27 +6,33 @@
  * account module.
  */
 
-import Vue from 'vue'
-import { CHECK, REGISTER, LOGIN, LOGOUT } from './mutation-types'
+import { CHECK, REGISTER, AUTH_REQUEST, AUTH_SUCCESS, AUTH_ERROR, LOGOUT } from './mutation-types'
 
 export default {
   [CHECK] (state) {
-    state.authenticated = !!localStorage.getItem('id_token')
+    //
   },
 
   [REGISTER] () {
     //
   },
 
-  [LOGIN] (state, token) {
-    state.authenticated = true
-    localStorage.setItem('id_token', token)
-    Vue.$http.defaults.headers.common.Authorization = `Bearer ${token}`
+  [AUTH_REQUEST] (state) {
+    state.status = 'loading'
+  },
+
+  [AUTH_SUCCESS] (state, data) {
+    state.status = 'success'
+    state.token = data.token
+    state.userId = data.userId
+  },
+
+  [AUTH_ERROR] (state) {
+    state.status = 'error'
   },
 
   [LOGOUT] (state) {
-    state.authenticated = false
-    localStorage.removeItem('id_token')
-    Vue.$http.defaults.headers.common.Authorization = ''
+    state.status = null
+    state.token = null
   }
 }

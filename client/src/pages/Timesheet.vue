@@ -1,19 +1,28 @@
 <template>
   <layout-main>
-    <v-data-table
-      :headers="headers"
-      :items="timesheet"
-      class="elevation-1"
-    >
-      <template v-slot:items="props">
-        <td>{{ props.item.name }}</td>
-        <td class="text-xs-right">{{ props.item.calories }}</td>
-        <td class="text-xs-right">{{ props.item.fat }}</td>
-        <td class="text-xs-right">{{ props.item.carbs }}</td>
-        <td class="text-xs-right">{{ props.item.protein }}</td>
-        <td class="text-xs-right">{{ props.item.iron }}</td>
-      </template>
-    </v-data-table>
+    <v-layout wrap>
+      <v-flex class="mb-4">
+        <h1 class="headline">Список табелей</h1>
+      </v-flex>
+    </v-layout>
+    <v-layout wrap>
+      <v-flex>
+          <v-data-table
+            :headers="headers"
+            :items="timesheet"
+            class="elevation-1"
+          >
+            <template v-slot:items="props">
+              <td>{{ null }}</td>
+              <td class="text-xs-right">{{ null }}</td>
+              <td class="text-xs-right">{{ null }}</td>
+              <td class="text-xs-right">{{ null }}</td>
+              <td class="text-xs-right">{{ null }}</td>
+              <td class="text-xs-right">{{ null }}</td>
+            </template>
+          </v-data-table>
+      </v-flex>
+    </v-layout>
   </layout-main>
 </template>
 

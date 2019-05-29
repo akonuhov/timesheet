@@ -45,7 +45,16 @@
         <v-icon>refresh</v-icon>
       </v-btn>
       <v-btn icon>
-        <v-icon>more_vert</v-icon>
+        <v-menu offset-y>
+          <template v-slot:activator="{ on }">
+            <v-icon v-on="on">more_vert</v-icon>
+          </template>
+          <v-list>
+            <v-list-tile @click="onClickLogout">
+              <v-list-tile-title><v-icon>exit_to_app</v-icon> Выйти</v-list-tile-title>
+            </v-list-tile>
+          </v-list>
+        </v-menu>
       </v-btn>
     </v-toolbar>
     <v-content app>
@@ -69,6 +78,13 @@ export default {
   computed: {
     getMainMenuItems () {
       return MainMenuItems
+    }
+  },
+  methods: {
+    onClickLogout () {
+      this.$store.dispatch('Authorization/logout').then(() => {
+        this.$router.push('/authorization')
+      })
     }
   }
 }

@@ -4,12 +4,13 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import './registerServiceWorker'
+import './plugins/axios'
 
 Vue.config.productionTip = false
 
 router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.authenticated)) {
-    if (!localStorage.getItem('authenticated')) {
+    if (!localStorage.getItem('token')) {
       next({
         path: '/authorization',
         query: { redirect: to.fullPath }

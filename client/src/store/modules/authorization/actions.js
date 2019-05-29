@@ -7,68 +7,59 @@
  */
 
 import Vue from 'vue'
-import store from '@/store'
-import { CHECK, REGISTER, LOGIN, LOGOUT } from './mutation-types'
+import { AUTH_REQUEST, AUTH_SUCCESS, AUTH_ERROR, REGISTER, LOGOUT } from './mutation-types'
 
-export const check = ({ commit }) => {
-  new Proxy()
-    .login(commit)
-    .then((response) => {
-      commit(CHECK, response)
-      store.dispatch('account/find')
-      Vue.router.push({
-        name: 'home.index'
+export const login = ({ commit }, user) => {
+  return new Promise((resolve, reject) => {
+    commit(AUTH_REQUEST)
+    Vue.$http.post('/api/Users/login', { username: user.username, password: user.password })
+      .then(res => {
+        const token = res.data.id
+        const userId = res.data.userId
+        localStorage.setItem('token', token)
+        Vue.$http.defaults.headers.common['Authorization'] = token
+        commit(AUTH_SUCCESS, { token, userId })
+        resolve(res)
       })
-    })
-    .catch(() => {
-      console.log('Request failed...')
-    })
+      .catch(error => {
+        commit(AUTH_ERROR)
+        localStorage.removeItem('token')
+        reject(error)
+      })
+  })
 }
 
-export const register = ({ commit }) => {
-  new Proxy()
-    .register(commit)
-    .then((response) => {
-      commit(REGISTER, response)
-    })
-    .catch(() => {
-      console.log('Request failed...')
-    })
-}
-
-export const login = ({ commit }) => {
-  new Proxy()
-    .login(commit)
-    .then((response) => {
-      commit(LOGIN, response)
-      store.dispatch('account/find')
-      Vue.router.push({
-        name: 'home.index'
+export const register = ({ commit }, user) => {
+  return new Promise((resolve, reject) => {
+    commit(REGISTER)
+    Vue.$http.post('/api/Users', { realm: user.realm, username: user.username, email: user.email, password: user.password, emailVerified: true })
+      .then(resp => {
+        const token = resp.data.token
+        const user = resp.data.user
+        localStorage.setItem('token', token)
+        Vue.$http.defaults.headers.common['Authorization'] = token
+        commit('auth_success', token, user)
+        resolve(resp)
       })
-    })
-    .catch(() => {
-      console.log('Request failed...')
-    })
+      .catch(err => {
+        commit('auth_error', err)
+        localStorage.removeItem('token')
+        reject(err)
+      })
+  })
 }
 
 export const logout = ({ commit }) => {
-  new Proxy()
-    .logout(commit)
-    .then((response) => {
-      commit(LOGOUT, response)
-      store.dispatch('account/find')
-      Vue.router.push({
-        name: 'login.index'
-      })
-    })
-    .catch(() => {
-      console.log('Request failed...')
-    })
+  return new Promise((resolve, reject) => {
+    commit(LOGOUT)
+    localStorage.removeItem('token')
+    delete Vue.$http.defaults.headers.common['Authorization']
+    resolve()
+  })
 }
 
 export default {
-  check,
-  register,
   login,
+  register,
   logout
 }

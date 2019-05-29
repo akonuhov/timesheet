@@ -37,9 +37,17 @@ export default new Router({
       }
     },
     {
-      path: 'workers',
+      path: '/workers',
       name: 'PageWorkers',
       component: () => import('./pages/Workers.vue'),
+      meta: {
+        authenticated: true
+      }
+    },
+    {
+      path: '/subdivision',
+      name: 'PageSubdivision',
+      component: () => import('./pages/Subdivisions.vue'),
       meta: {
         authenticated: true
       }

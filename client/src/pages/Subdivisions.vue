@@ -2,19 +2,17 @@
   <layout-main>
     <v-layout wrap>
       <v-flex class="mb-4">
-        <h1 class="headline">Список сотрудников</h1>
+        <h1 class="headline">Список подразделений</h1>
       </v-flex>
     </v-layout>
     <v-layout wrap>
       <v-flex>
         <v-data-table
           :headers="headers"
-          :items="workers"
+          :items="subdivision"
           class="elevation-1"
         >
           <template v-slot:items="props">
-            <td>{{ null }}</td>
-            <td>{{ null }}</td>
             <td>{{ null }}</td>
             <td>{{ null }}</td>
             <td>{{ null }}</td>
@@ -28,19 +26,17 @@
 <script>
 import LayoutMain from '../layouts/Main.vue'
 export default {
-  name: 'PageWorkers',
+  name: 'PageSubdivision',
   components: {
     LayoutMain: LayoutMain
   },
   data: () => ({
     headers: [
-      { text: 'ID', value: 'userId' },
-      { text: 'Логин', value: 'username' },
-      { text: 'Email', value: 'email' },
-      { text: 'Роль', value: 'realm' },
-      { text: 'Пароль', value: 'password' }
+      { text: 'Наименование', value: 'userId' },
+      { text: 'Номер', value: 'username' },
+      { text: 'Адрес', value: 'email' }
     ],
-    workers: []
+    subdivision: []
   })
 }
 </script>
