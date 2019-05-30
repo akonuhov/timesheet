@@ -11,10 +11,6 @@
       "type": "string",
       "required": true
     },
-    "subdivision": {
-      "type": "string",
-      "required": true
-    },
     "subdivision_number": {
       "type": "string",
       "required": true

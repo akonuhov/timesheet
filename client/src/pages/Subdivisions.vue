@@ -45,14 +45,14 @@
     </v-toolbar>
     <v-data-table
       :headers="headers"
-      :items="subdivisionsList"
+      :items="getSubdivisionsList"
       :search="searchSubdivisions"
       class="elevation-1"
     >
       <template v-slot:items="props">
-        <td>{{ null }}</td>
-        <td>{{ null }}</td>
-        <td>{{ null }}</td>
+        <td>{{ props.item.name }}</td>
+        <td>{{ props.item.code }}</td>
+        <td>{{ props.item.address }}</td>
       </template>
     </v-data-table>
   </layout-main>
@@ -67,11 +67,10 @@ export default {
   },
   data: () => ({
     headers: [
-      { text: 'Наименование', value: 'userId' },
-      { text: 'Номер', value: 'username' },
-      { text: 'Адрес', value: 'email' }
+      { text: 'Наименование', value: 'name' },
+      { text: 'Номер', value: 'code' },
+      { text: 'Адрес', value: 'address' }
     ],
-    subdivisionsList: [],
     subdivision: {
       name: null,
       code: null,
@@ -80,12 +79,20 @@ export default {
     searchSubdivisions: null,
     dialogSaveSubdivision: false
   }),
+  computed: {
+    getSubdivisionsList () {
+      return this.$store.state.Subdivision.list
+    }
+  },
   methods: {
     onClickCloseDialogSubdivisions () {
       this.dialogSaveSubdivision = false
     },
     onClickSaveDialogSubdivisions () {
-
+      let subdivision = this.subdivision
+      this.$store.dispatch('Subdivision/create', { name: subdivision.name, code: subdivision.code, address: subdivision.address }).then(() => {
+        this.dialogSaveSubdivision = false
+      })
     }
   }
 }

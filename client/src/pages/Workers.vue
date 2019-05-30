@@ -30,7 +30,7 @@
                   <v-text-field v-model="worker.in" label="Идентификационный номер"></v-text-field>
                 </v-flex>
                 <v-flex>
-                  <v-select :items="getSubdivisionList" label="Подразделение"></v-select>
+                  <v-select v-model="worker.subdivision" :items="getSubdivisionsList" item-text="name" item-value="code" label="Подразделение"></v-select>
                 </v-flex>
                 <v-flex>
                   <v-text-field v-model="worker.position" label="Должность"></v-text-field>
@@ -51,16 +51,16 @@
     </v-toolbar>
     <v-data-table
       :headers="headers"
-      :items="workersList"
+      :items="getWorkersList"
       :search="searchWorkers"
       class="elevation-1"
     >
       <template v-slot:items="props">
-        <td>{{ null }}</td>
-        <td>{{ null }}</td>
-        <td>{{ null }}</td>
-        <td>{{ null }}</td>
-        <td>{{ null }}</td>
+        <td>{{ props.item.in }}</td>
+        <td>{{ props.item.subdivision_number }}</td>
+        <td>{{ props.item.full_name }}</td>
+        <td>{{ props.item.position }}</td>
+        <td>{{ props.item.timesheet }}</td>
       </template>
       <template v-slot:no-results>
         <v-alert :value="true" color="error" icon="warning">
@@ -80,27 +80,30 @@ export default {
   },
   data: () => ({
     headers: [
-      { text: 'ID', value: 'userId' },
-      { text: 'Логин', value: 'username' },
-      { text: 'Email', value: 'email' },
-      { text: 'Роль', value: 'realm' },
-      { text: 'Пароль', value: 'password' }
+      { text: 'ФИО', value: 'full_name' },
+      { text: 'Идентификационный номер', value: 'in' },
+      { text: 'Подразделение', value: 'subdivision_number' },
+      { text: 'Должность', value: 'position' },
+      { text: 'Рабочий табель', value: 'timesheet' }
     ],
     workersList: [],
     worker: {
       in: null,
-      subdivision: null,
       subdivision_number: null,
       full_name: null,
       position: null,
       timesheet: null
     },
     searchWorkers: null,
-    dialogSaveWorker: false
+    dialogSaveWorker: false,
+    selectSubdivisionList: null
   }),
   computed: {
-    getSubdivisionList () {
-      return []
+    getSubdivisionsList () {
+      return this.$store.state.Subdivision.list
+    },
+    getWorkersList () {
+      return this.$store.state.Worker.list
     }
   },
   methods: {
@@ -108,7 +111,16 @@ export default {
       this.dialogSaveWorker = false
     },
     onClickSaveDialogWorker () {
-
+      let worker = this.worker
+      this.$store.dispatch('Worker/create', {
+        in: worker.in,
+        subdivision: worker.subdivision,
+        full_name: worker.full_name,
+        position: worker.position,
+        timesheet: worker.timesheet
+      }).then(() => {
+        this.dialogSaveWorker = false
+      })
     }
   }
 }
