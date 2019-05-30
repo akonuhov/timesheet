@@ -5,7 +5,7 @@
     "url": "postgres://sqladmin:hs9^bdJsde@pgs.5dd.ru:5432/tabel?ssl=false",
     "database": "tabel",
     "password": "hs9^bdJsde",
-    "name": "timesheet",
+    "name": "tabel",
     "user": "sqladmin",
     "connector": "postgresql"
   }

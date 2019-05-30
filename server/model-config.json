@@ -34,5 +34,13 @@
   "Role": {
     "dataSource": "tabel",
     "public": false
+  },
+  "Worker": {
+    "dataSource": "tabel",
+    "public": true
+  },
+  "Subdivision": {
+    "dataSource": "tabel",
+    "public": true
   }
 }

@@ -1,0 +1,38 @@
+{
+  "name": "Worker",
+  "plural": "Workers",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "in": {
+      "type": "string",
+      "required": true
+    },
+    "subdivision": {
+      "type": "string",
+      "required": true
+    },
+    "subdivision_number": {
+      "type": "string",
+      "required": true
+    },
+    "full_name": {
+      "type": "string",
+      "required": true
+    },
+    "position": {
+      "type": "string",
+      "required": true
+    },
+    "timesheet": {
+      "type": "string"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}
