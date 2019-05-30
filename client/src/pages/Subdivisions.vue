@@ -11,7 +11,7 @@
       ></v-text-field>
       <v-dialog v-model="dialogSaveSubdivision" max-width="500px">
         <template v-slot:activator="{ on }">
-          <v-btn dark color="primary" class="ml-5" v-on="on">
+          <v-btn dark color="primary" class="ml-5" v-on="on" @click="onClickCreateDialogSubdivision">
             Добавить
             <v-icon right dark>add</v-icon>
           </v-btn>
@@ -38,7 +38,7 @@
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="blue darken-1" flat @click="onClickCloseDialogSubdivisions">Отмена</v-btn>
-            <v-btn color="blue darken-1" flat @click="onClickSaveDialogSubdivisions">Добавить</v-btn>
+            <v-btn color="blue darken-1" flat @click="onClickSaveDialogSubdivisions">{{ statusDialog === 'create' ? 'Добавить' : 'Сохранить' }}</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -53,6 +53,21 @@
         <td>{{ props.item.name }}</td>
         <td>{{ props.item.code }}</td>
         <td>{{ props.item.address }}</td>
+        <td class="justify-center layout px-0">
+          <v-icon
+            small
+            class="mr-2"
+            @click="onClickEditSubdivisions(props.item)"
+          >
+            edit
+          </v-icon>
+          <v-icon
+            small
+            @click="onClickRemoveSubdivisions(props.item.id)"
+          >
+            delete
+          </v-icon>
+        </td>
       </template>
     </v-data-table>
   </layout-main>
@@ -69,7 +84,8 @@ export default {
     headers: [
       { text: 'Наименование', value: 'name' },
       { text: 'Номер', value: 'code' },
-      { text: 'Адрес', value: 'address' }
+      { text: 'Адрес', value: 'address' },
+      { text: 'Действия', value: 'actions', align: 'center', sortable: false }
     ],
     subdivision: {
       name: null,
@@ -77,7 +93,8 @@ export default {
       address: null
     },
     searchSubdivisions: null,
-    dialogSaveSubdivision: false
+    dialogSaveSubdivision: false,
+    statusDialog: 'create'
   }),
   computed: {
     getSubdivisionsList () {
@@ -85,14 +102,47 @@ export default {
     }
   },
   methods: {
+    onClickCreateDialogSubdivision () {
+      for (let key in this.subdivision) {
+        this.subdivision[key] = null
+      }
+    },
     onClickCloseDialogSubdivisions () {
       this.dialogSaveSubdivision = false
     },
     onClickSaveDialogSubdivisions () {
       let subdivision = this.subdivision
-      this.$store.dispatch('Subdivision/create', { name: subdivision.name, code: subdivision.code, address: subdivision.address }).then(() => {
-        this.dialogSaveSubdivision = false
-      })
+      switch (this.statusDialog) {
+        case 'create':
+          this.$store.dispatch('Subdivision/create', {
+            name: subdivision.name,
+            code: subdivision.code,
+            address: subdivision.address
+          }).then(() => {
+            this.dialogSaveSubdivision = false
+          })
+          break
+        case 'edit':
+          this.$store.dispatch('Subdivision/edit', {
+            id: subdivision.id,
+            data: {
+              name: subdivision.name,
+              code: subdivision.code,
+              address: subdivision.address
+            }
+          }).then(() => {
+            this.dialogSaveSubdivision = false
+          })
+          break
+      }
+    },
+    onClickEditSubdivisions (item) {
+      this.dialogSaveSubdivision = true
+      this.statusDialog = 'edit'
+      this.subdivision = Object.assign(this.subdivision, item)
+    },
+    onClickRemoveSubdivisions (id) {
+      confirm('Вы точно хотите удалить это подраздление?') && this.$store.dispatch('Subdivision/remove', id)
     }
   }
 }

@@ -26,7 +26,6 @@ export const create = ({ commit }, worker) => {
   return new Promise((resolve, reject) => {
     Vue.$http.post('/api/Workers', {
       in: worker.in,
-      subdivision: worker.subdivision,
       subdivision_number: worker.subdivision_number,
       full_name: worker.full_name,
       position: worker.position,
@@ -46,7 +45,7 @@ export const remove = ({ commit }, workerId) => {
   return new Promise((resolve, reject) => {
     Vue.$http.delete('/api/Workers/' + workerId)
       .then(res => {
-        commit(REMOVE, { res })
+        commit(REMOVE, workerId)
         resolve(res)
       })
       .catch(error => {
@@ -55,11 +54,17 @@ export const remove = ({ commit }, workerId) => {
   })
 }
 
-export const edit = ({ commit }, workerId, worker) => {
+export const edit = ({ commit }, worker) => {
   return new Promise((resolve, reject) => {
-    Vue.$http.put('/api/Workers/' + workerId, { worker })
+    Vue.$http.put('/api/Workers/' + worker.id, {
+      in: worker.data.in,
+      subdivision_number: worker.data.subdivision_number,
+      full_name: worker.data.full_name,
+      position: worker.data.position,
+      timesheet: worker.data.timesheet
+    })
       .then(res => {
-        commit(EDIT, { res })
+        commit(EDIT, worker)
         resolve(res)
       })
       .catch(error => {

@@ -17,11 +17,12 @@ export default {
     state.list.push(payload.res.data)
   },
 
-  [REMOVE] (state) {
-    //
+  [REMOVE] (state, payload) {
+    state.list = state.list.filter(item => item.id !== payload)
   },
 
-  [EDIT] (state) {
-    //
+  [EDIT] (state, payload) {
+    let index = state.list.findIndex(item => item.id === payload.id)
+    state.list[index] = Object.assign(state.list[index], payload.data)
   }
 }
