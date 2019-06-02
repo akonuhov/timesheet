@@ -97,7 +97,6 @@ export default {
       { text: 'Рабочий табель', value: 'timesheet' },
       { text: 'Действия', value: 'actions', align: 'center', sortable: false }
     ],
-    workersList: [],
     worker: {
       in: null,
       subdivision_number: null,

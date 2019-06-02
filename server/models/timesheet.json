@@ -1,0 +1,34 @@
+{
+  "name": "Timesheet",
+  "plural": "timesheets",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "worker": {
+      "type": "string",
+      "required": true
+    },
+    "planned": {
+      "type": [
+        "object"
+      ],
+      "required": true
+    },
+    "actual": {
+      "type": [
+        "object"
+      ]
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

@@ -28,14 +28,6 @@ export default new Router({
       }
     },
     {
-      path: '/timesheet/add',
-      name: 'PageTimesheetAdd',
-      component: () => import('./pages/TimesheetAdd.vue'),
-      meta: {
-        authenticated: true
-      }
-    },
-    {
       path: '/workers',
       name: 'PageWorkers',
       component: () => import('./pages/Workers.vue'),

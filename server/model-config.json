@@ -42,5 +42,9 @@
   "Subdivision": {
     "dataSource": "tabel",
     "public": true
+  },
+  "Timesheet": {
+    "dataSource": "tabel",
+    "public": true
   }
 }

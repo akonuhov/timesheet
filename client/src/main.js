@@ -1,10 +1,11 @@
 import Vue from 'vue'
-import './plugins/vuetify'
 import App from './App.vue'
 import router from './router'
 import store from './store'
 import './registerServiceWorker'
 import './plugins/axios'
+import './plugins/moment'
+import './plugins/vuetify'
 Vue.config.productionTip = false
 store.dispatch('Subdivision/list')
 store.dispatch('Worker/list')
@@ -22,7 +23,6 @@ router.beforeEach((to, from, next) => {
     next()
   }
 })
-
 new Vue({
   router,
   store,
