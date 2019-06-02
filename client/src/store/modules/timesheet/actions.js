@@ -1,9 +1,9 @@
 /* ============
- * Actions for the subdivision module
+ * Actions for the timesheet module
  * ============
  *
  * The actions that are available on the
- * subdivision module.
+ * timesheet module.
  */
 
 import Vue from 'vue'
@@ -11,7 +11,7 @@ import { LIST, CREATE, REMOVE, EDIT } from './mutation-types'
 
 export const list = ({ commit }) => {
   return new Promise((resolve, reject) => {
-    Vue.$http.get('/api/subdivisions')
+    Vue.$http.get('/api/timesheets')
       .then(res => {
         commit(LIST, { res })
         resolve(res)
@@ -22,12 +22,13 @@ export const list = ({ commit }) => {
   })
 }
 
-export const create = ({ commit }, subdivision) => {
+export const create = ({ commit }, timesheet) => {
   return new Promise((resolve, reject) => {
-    Vue.$http.post('/api/subdivisions', {
-      name: subdivision.name,
-      code: subdivision.code,
-      address: subdivision.address
+    Vue.$http.post('/api/timesheets', {
+      name: timesheet.name,
+      worker: timesheet.worker,
+      planned: timesheet.planned,
+      actual: timesheet.actual
     })
       .then(res => {
         commit(CREATE, { res })
@@ -39,11 +40,11 @@ export const create = ({ commit }, subdivision) => {
   })
 }
 
-export const remove = ({ commit }, subdivisionId) => {
+export const remove = ({ commit }, timesheetId) => {
   return new Promise((resolve, reject) => {
-    Vue.$http.delete('/api/subdivisions/' + subdivisionId)
+    Vue.$http.delete('/api/timesheets/' + timesheetId)
       .then(res => {
-        commit(REMOVE, subdivisionId)
+        commit(REMOVE, timesheetId)
         resolve(res)
       })
       .catch(error => {
@@ -52,15 +53,17 @@ export const remove = ({ commit }, subdivisionId) => {
   })
 }
 
-export const edit = ({ commit }, subdivision) => {
+export const edit = ({ commit }, timesheet) => {
+  console.log(timesheet)
   return new Promise((resolve, reject) => {
-    Vue.$http.put('/api/subdivisions/' + subdivision.id, {
-      name: subdivision.data.name,
-      code: subdivision.data.code,
-      address: subdivision.data.address
+    Vue.$http.put('/api/timesheets/' + timesheet.id, {
+      name: timesheet.data.name,
+      worker: timesheet.data.worker,
+      planned: timesheet.data.planned,
+      actual: timesheet.data.actual
     })
       .then(res => {
-        commit(EDIT, subdivision)
+        commit(EDIT, timesheet)
         resolve(res)
       })
       .catch(error => {

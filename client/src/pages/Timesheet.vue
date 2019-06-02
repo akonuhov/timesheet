@@ -11,10 +11,7 @@
       ></v-text-field>
       <v-dialog v-model="dialogSaveTimesheet" fullscreen hide-overlay transition="dialog-bottom-transition">
         <template v-slot:activator="{ on }">
-          <v-btn dark color="primary" class="ml-5" v-on="on">
-            Добавить
-            <v-icon right dark>add</v-icon>
-          </v-btn>
+          <v-btn dark color="primary" class="ml-5" v-on="on">Добавить<v-icon right dark>add</v-icon></v-btn>
         </template>
         <v-card>
           <v-toolbar dark color="primary">
@@ -23,22 +20,22 @@
               Отмена
             </v-btn>
             <v-spacer></v-spacer>
-            <v-btn dark flat @click="onClickSaveDialogTimeshhet">Добавить</v-btn>
+            <v-btn dark flat @click="onClickSaveDialogTimeshhet">{{ statusDialog === 'create' ? 'Добавить' : 'Сохранить' }}</v-btn>
           </v-toolbar>
           <v-card-text>
-            <v-container grid-list-xl fluid>
+            <v-container grid-list-xl fluid fill-height>
               <v-layout row wrap>
-                <v-flex xs3>
+                <v-flex d-flex xs3>
                   <v-card height="100%">
                     <v-card-actions>
                       <v-toolbar flat color="transparent" class="v-toolbar--calendar">
-                        <v-btn fab small color="primary" @click="$refs.calendarTimesheet.prev()">
+                        <v-btn fab small color="primary" @click="onClickCalendarPrev">
                           <v-icon>keyboard_arrow_left</v-icon>
                         </v-btn>
                         <v-spacer></v-spacer>
                         <v-toolbar-title class="ml-0">{{ getCalendarTimesheetDate }}</v-toolbar-title>
                         <v-spacer></v-spacer>
-                        <v-btn fab small color="primary" @click="$refs.calendarTimesheet.next()">
+                        <v-btn fab small color="primary" @click="onClickCalendarNext">
                           <v-icon>keyboard_arrow_right</v-icon>
                         </v-btn>
                       </v-toolbar>
@@ -56,16 +53,59 @@
                     </v-card-text>
                   </v-card>
                 </v-flex>
-                <v-flex xs9>
-                  <v-sheet height="500">
-                    <v-calendar
-                      ref="calendarTimesheet"
-                      v-model="calendarTimesheet"
-                      :type="calendarTypeTimesheet"
-                      locale="ru"
-                      color="primary"
-                    ></v-calendar>
-                  </v-sheet>
+                <v-flex d-flex xs9>
+                  <v-layout row wrap>
+                    <v-flex d-flex xs12>
+                      <v-sheet height="50%">
+                        <h2 class="title mb-4">Плановый табель</h2>
+                        <v-calendar
+                          ref="calendarTimesheetPlanned"
+                          v-model="timesheetPlanned"
+                          :type="calendarTypeTimesheet"
+                          locale="ru"
+                          color="primary"
+                          @click:day="onClickTimesheetDay"
+                        >
+                          <template v-slot:day="{ date }">
+                            <template v-for="day in getTimesheetListDay[date]">
+                              {{ day.status }}
+                            </template>
+                          </template>
+                        </v-calendar>
+                      </v-sheet>
+                    </v-flex>
+                    <v-flex d-flex xs12>
+                      <v-sheet height="50%">
+                        <h2 class="title mb-4">Фактический табель</h2>
+                        <v-calendar
+                          ref="calendarTimesheetActual"
+                          v-model="timesheetActual"
+                          :type="calendarTypeTimesheet"
+                          locale="ru"
+                          color="primary"
+                        ></v-calendar>
+                      </v-sheet>
+                    </v-flex>
+                    <v-dialog v-model="dialogSaveTimesheetDay" max-width="350">
+                      <v-card>
+                        <v-card-title class="headline">Добавть статус</v-card-title>
+                        <v-card-text>
+                          <v-form>
+                            <v-select
+                              :items="statusTimesheetDayList"
+                              v-model="statusTimesheetDay"
+                              label="Статус дня"
+                            ></v-select>
+                          </v-form>
+                        </v-card-text>
+                        <v-card-actions>
+                          <v-spacer></v-spacer>
+                          <v-btn color="green darken-1" flat="flat" @click="onClickDialogCancelTimesheetDay">Отмена</v-btn>
+                          <v-btn color="green darken-1" flat="flat"  @click="onClickDialogSaveTimeSheetDay">Добавить</v-btn>
+                        </v-card-actions>
+                      </v-card>
+                    </v-dialog>
+                  </v-layout>
                 </v-flex>
               </v-layout>
             </v-container>
@@ -79,12 +119,12 @@
       class="elevation-1"
     >
       <template v-slot:items="props">
-        <td>{{ null }}</td>
-        <td class="text-xs-right">{{ null }}</td>
-        <td class="text-xs-right">{{ null }}</td>
-        <td class="text-xs-right">{{ null }}</td>
-        <td class="text-xs-right">{{ null }}</td>
-        <td class="text-xs-right">{{ null }}</td>
+        <td>{{ props.item.name }}</td>
+        <td>{{ props.item.worker }}</td>
+        <td class="justify-center layout px-0">
+          <v-icon small class="mr-2" @click="onClickEditTimesheet(props.item)">edit</v-icon>
+          <v-icon small @click="onClickRemoveTimesheet(props.item.id)">delete</v-icon>
+        </td>
       </template>
     </v-data-table>
   </layout-main>
@@ -99,31 +139,39 @@ export default {
   },
   data: () => ({
     headers: [
-      { text: 'Подразделение', value: 'subdivision' },
-      { text: 'Номер подразделения', value: 'subdivision_number' },
-      { text: 'Сотрудник', value: 'user' },
-      { text: 'Должность', value: 'position' },
-      { text: 'График работы', value: 'timesheet' },
-      { text: 'ИД', value: 'id' }
+      { text: 'Наименование', value: 'name' },
+      { text: 'ФИО сотрудника', value: 'worker' },
+      { text: 'Действия', value: 'actions', align: 'center', sortable: false }
     ],
     searchTimeshhet: null,
     dialogSaveTimesheet: false,
-    calendarTimesheet: new Date().toJSON(),
+    dialogSaveTimesheetDay: false,
     calendarTypeTimesheet: 'month',
     timesheet: {
       name: null,
-      worker: null
-    }
+      worker: null,
+      planned: [],
+      actual: []
+    },
+    statusTimesheetDayList: ['Рабочий', 'Выходной', 'Отпуск', 'Командировка', 'Больничный', 'Прогул'],
+    statusDialog: 'create',
+    timesheetPlanned: new Date().toJSON(),
+    timesheetActual: new Date().toJSON(),
+    clickTimesheetDay: null,
+    statusTimesheetDay: null
   }),
   computed: {
     getTimesheetList () {
-      return []
+      return this.$store.state.Timesheet.list
     },
     getCalendarTimesheetDate () {
-      return this.moment(this.calendarTimesheet).format('D MMMM YYYY')
+      return this.moment(this.timesheetPlanned).format('D MMMM YYYY')
     },
     getWorkersList () {
       return this.$store.state.Worker.list
+    },
+    getTimesheetListDay () {
+      return []
     }
   },
   methods: {
@@ -131,7 +179,62 @@ export default {
       this.dialogSaveTimesheet = false
     },
     onClickSaveDialogTimeshhet () {
-      //
+      let timesheet = this.timesheet
+      switch (this.statusDialog) {
+        case 'create':
+          this.$store.dispatch('Timesheet/create', {
+            name: timesheet.name,
+            worker: timesheet.worker,
+            planned: timesheet.planned,
+            actual: timesheet.actual
+          }).then(() => {
+            this.dialogSaveTimesheet = false
+          })
+          break
+        case 'edit':
+          this.$store.dispatch('Timesheet/edit', {
+            id: timesheet.id,
+            data: {
+              name: timesheet.name,
+              worker: timesheet.worker,
+              planned: timesheet.planned,
+              actual: timesheet.actual
+            }
+          }).then(() => {
+            this.dialogSaveTimesheet = false
+          })
+          break
+      }
+    },
+    onClickTimesheetDay (day) {
+      this.dialogSaveTimesheetDay = true
+      this.clickTimesheetDay = day
+    },
+    onClickEditTimesheet (item) {
+      this.dialogSaveTimesheet = true
+      this.statusDialog = 'edit'
+      this.timesheet = Object.assign(this.timesheet, item)
+    },
+    onClickRemoveTimesheet (id) {
+      confirm('Вы точно хотите удалить это подраздление?') && this.$store.dispatch('Timesheet/remove', id)
+    },
+    onClickCalendarNext () {
+      this.$refs.calendarTimesheetPlanned.next()
+      this.$refs.calendarTimesheetActual.next()
+    },
+    onClickCalendarPrev () {
+      this.$refs.calendarTimesheetPlanned.prev()
+      this.$refs.calendarTimesheetActual.prev()
+    },
+    onClickDialogCancelTimesheetDay () {
+      this.dialogSaveTimesheetDay = false
+    },
+    onClickDialogSaveTimeSheetDay () {
+      this.timesheet.planned.push({
+        date: this.clickTimesheetDay.date,
+        status: this.statusTimesheetDay
+      })
+      this.dialogSaveTimesheetDay = false
     }
   }
 }

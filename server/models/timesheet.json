@@ -1,6 +1,6 @@
 {
   "name": "Timesheet",
-  "plural": "timesheets",
+  "plural": "Timesheets",
   "base": "PersistedModel",
   "idInjection": true,
   "options": {

@@ -11,7 +11,7 @@ import { LIST, CREATE, REMOVE, EDIT } from './mutation-types'
 
 export const list = ({ commit }) => {
   return new Promise((resolve, reject) => {
-    Vue.$http.get('/api/Workers')
+    Vue.$http.get('/api/workers')
       .then(res => {
         commit(LIST, { res })
         resolve(res)
@@ -24,7 +24,7 @@ export const list = ({ commit }) => {
 
 export const create = ({ commit }, worker) => {
   return new Promise((resolve, reject) => {
-    Vue.$http.post('/api/Workers', {
+    Vue.$http.post('/api/workers', {
       in: worker.in,
       subdivision_number: worker.subdivision_number,
       full_name: worker.full_name,
@@ -43,7 +43,7 @@ export const create = ({ commit }, worker) => {
 
 export const remove = ({ commit }, workerId) => {
   return new Promise((resolve, reject) => {
-    Vue.$http.delete('/api/Workers/' + workerId)
+    Vue.$http.delete('/api/workers/' + workerId)
       .then(res => {
         commit(REMOVE, workerId)
         resolve(res)
@@ -56,7 +56,7 @@ export const remove = ({ commit }, workerId) => {
 
 export const edit = ({ commit }, worker) => {
   return new Promise((resolve, reject) => {
-    Vue.$http.put('/api/Workers/' + worker.id, {
+    Vue.$http.put('/api/workers/' + worker.id, {
       in: worker.data.in,
       subdivision_number: worker.data.subdivision_number,
       full_name: worker.data.full_name,

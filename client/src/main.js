@@ -9,6 +9,7 @@ import './plugins/vuetify'
 Vue.config.productionTip = false
 store.dispatch('Subdivision/list')
 store.dispatch('Worker/list')
+store.dispatch('Timesheet/list')
 router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.authenticated)) {
     if (!localStorage.getItem('token')) {
