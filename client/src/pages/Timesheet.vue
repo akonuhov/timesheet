@@ -125,7 +125,7 @@
                               </td>
                             </tr>
                             <tr>
-                              <td v-for="(day, index) in getDaysToday" v-bind:key="day.time" align="center">
+                              <td v-for="(day, index) in getDaysToday" v-bind:key="index" align="center">
                                 <v-edit-dialog
                                   :return-value.sync="day.time"
                                   lazy
@@ -159,7 +159,7 @@
                               </td>
                             </tr>
                             <tr>
-                              <td v-for="(day, index) in getDaysToday" v-bind:key="day.time" align="center">
+                              <td v-for="(day, index) in getDaysToday" v-bind:key="index" align="center">
                                 <v-edit-dialog
                                   :return-value.sync="day.time"
                                   lazy
@@ -259,16 +259,7 @@ export default {
   },
   created () {
     for (let i = 0; i < 30; i++) {
-      this.setTimesheetDaysCount.push({
-        date: null,
-        worker: null,
-        days: {
-          name: i + 1,
-          number: null,
-          value: null,
-          time: null
-        }
-      })
+      this.setTimesheetDaysCount.push({ name: i + 1, value: null, time: null })
     }
   },
   computed: {
