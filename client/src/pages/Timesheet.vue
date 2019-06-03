@@ -102,10 +102,39 @@
                           </thead>
                           <tbody>
                             <tr>
-                              <td v-for="(day, index) in getDaysToday" v-bind:key="index" align="center">Я</td>
+
+                              <td v-for="(day, index) in getDaysToday" v-bind:key="index" align="center">
+                                <v-edit-dialog
+                                  :return-value.sync="day.value"
+                                  lazy
+                                > {{ day.value }}
+                                  <template v-slot:input>
+                                    <v-text-field
+                                      v-model="day.value"
+                                      label="Редактировать"
+                                      single-line
+                                      counter
+                                    ></v-text-field>
+                                  </template>
+                                </v-edit-dialog>
+                              </td>
                             </tr>
                             <tr>
-                              <td v-for="(day, index) in getDaysToday" v-bind:key="index" align="center">8</td>
+                              <td v-for="(day, index) in getDaysToday" v-bind:key="index" align="center">
+                                <v-edit-dialog
+                                  :return-value.sync="day.time"
+                                  lazy
+                                > {{ day.time }}
+                                  <template v-slot:input>
+                                    <v-text-field
+                                      v-model="day.time"
+                                      label="Редактировать"
+                                      single-line
+                                      counter
+                                    ></v-text-field>
+                                  </template>
+                                </v-edit-dialog>
+                              </td>
                             </tr>
                           </tbody>
                         </table>
@@ -191,7 +220,7 @@ export default {
   },
   created () {
     for (let i = 0; i < 30; i++) {
-      this.setTimesheetDaysCount.push({ name: i + 1, value: '' })
+      this.setTimesheetDaysCount.push({ name: i + 1, value: null, time: null })
     }
   },
   computed: {
