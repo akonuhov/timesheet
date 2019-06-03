@@ -54,19 +54,8 @@
         <td>{{ props.item.code }}</td>
         <td>{{ props.item.address }}</td>
         <td class="justify-center layout px-0">
-          <v-icon
-            small
-            class="mr-2"
-            @click="onClickEditSubdivisions(props.item)"
-          >
-            edit
-          </v-icon>
-          <v-icon
-            small
-            @click="onClickRemoveSubdivisions(props.item.id)"
-          >
-            delete
-          </v-icon>
+          <v-icon small class="mr-2" @click="onClickEditSubdivisions(props.item)">edit</v-icon>
+          <v-icon small @click="onClickRemoveSubdivisions(props.item.id)">delete</v-icon>
         </td>
       </template>
     </v-data-table>

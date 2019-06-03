@@ -7,5 +7,11 @@
  */
 
 export default {
-  //
+  getSelectSubdivisionWorkerGroup: state => name => {
+    if (name) {
+      return state.list.filter(item => item.subdivision_number === name)
+    } else {
+      return []
+    }
+  }
 }

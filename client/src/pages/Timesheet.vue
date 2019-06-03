@@ -20,92 +20,110 @@
               Отмена
             </v-btn>
             <v-spacer></v-spacer>
+            <v-flex xs3>
+              <v-select
+                v-model="selectedItemSubdivisionList"
+                :items="getSubdivisionList"
+                item-text="name"
+                label="Подразделение"
+                prepend-icon="work"
+              ></v-select>
+            </v-flex>
+            <v-flex xs3 class="ml-2">
+              <v-menu v-model="menuSetTimesheetDate"
+                lazy
+                transition="scale-transition"
+                offset-y
+                full-width
+                max-width="290px"
+                min-width="290px"
+              >
+                <template v-slot:activator="{ on }">
+                  <v-text-field
+                    v-model="setTimesheetDate"
+                    label="Дата"
+                    prepend-icon="event"
+                    v-on="on"
+                  ></v-text-field>
+                </template>
+                <v-date-picker v-model="setTimesheetDate"
+                               no-title
+                               @input="menuSetTimesheetDate = false"
+                               type="month"
+                               locale="ru"
+                               ></v-date-picker>
+              </v-menu>
+            </v-flex>
+            <v-spacer></v-spacer>
             <v-btn dark flat @click="onClickSaveDialogTimeshhet">{{ statusDialog === 'create' ? 'Добавить' : 'Сохранить' }}</v-btn>
           </v-toolbar>
-          <v-card-text>
+          <v-card-text class="timesheet">
             <v-container grid-list-xl fluid fill-height>
               <v-layout row wrap>
-                <v-flex d-flex xs3>
-                  <v-card height="100%">
-                    <v-card-actions>
-                      <v-toolbar flat color="transparent" class="v-toolbar--calendar">
-                        <v-btn fab small color="primary" @click="onClickCalendarPrev">
-                          <v-icon>keyboard_arrow_left</v-icon>
-                        </v-btn>
-                        <v-spacer></v-spacer>
-                        <v-toolbar-title class="ml-0">{{ getCalendarTimesheetDate }}</v-toolbar-title>
-                        <v-spacer></v-spacer>
-                        <v-btn fab small color="primary" @click="onClickCalendarNext">
-                          <v-icon>keyboard_arrow_right</v-icon>
-                        </v-btn>
-                      </v-toolbar>
-                    </v-card-actions>
-                    <v-card-text>
-                      <v-form>
-                        <v-text-field v-model="timesheet.name" label="Наименование"></v-text-field>
-                        <v-select
-                          v-model="timesheet.worker"
-                          :items="getWorkersList"
-                          item-text="full_name"
-                          label="Сотрудник"
-                        ></v-select>
-                      </v-form>
-                    </v-card-text>
-                  </v-card>
-                </v-flex>
-                <v-flex d-flex xs9>
-                  <v-layout row wrap>
-                    <v-flex d-flex xs12>
-                      <v-sheet height="50%">
-                        <h2 class="title mb-4">Плановый табель</h2>
-                        <v-calendar
-                          ref="calendarTimesheetPlanned"
-                          v-model="timesheetPlanned"
-                          :type="calendarTypeTimesheet"
-                          locale="ru"
-                          color="primary"
-                          @click:day="onClickTimesheetDay"
-                        >
-                          <template v-slot:day="{ date }">
-                            <template v-for="day in getTimesheetListDay[date]">
-                              {{ day.status }}
-                            </template>
-                          </template>
-                        </v-calendar>
-                      </v-sheet>
-                    </v-flex>
-                    <v-flex d-flex xs12>
-                      <v-sheet height="50%">
-                        <h2 class="title mb-4">Фактический табель</h2>
-                        <v-calendar
-                          ref="calendarTimesheetActual"
-                          v-model="timesheetActual"
-                          :type="calendarTypeTimesheet"
-                          locale="ru"
-                          color="primary"
-                        ></v-calendar>
-                      </v-sheet>
-                    </v-flex>
-                    <v-dialog v-model="dialogSaveTimesheetDay" max-width="350">
-                      <v-card>
-                        <v-card-title class="headline">Добавть статус</v-card-title>
-                        <v-card-text>
-                          <v-form>
-                            <v-select
-                              :items="statusTimesheetDayList"
-                              v-model="statusTimesheetDay"
-                              label="Статус дня"
-                            ></v-select>
-                          </v-form>
-                        </v-card-text>
-                        <v-card-actions>
-                          <v-spacer></v-spacer>
-                          <v-btn color="green darken-1" flat="flat" @click="onClickDialogCancelTimesheetDay">Отмена</v-btn>
-                          <v-btn color="green darken-1" flat="flat"  @click="onClickDialogSaveTimeSheetDay">Добавить</v-btn>
-                        </v-card-actions>
-                      </v-card>
-                    </v-dialog>
-                  </v-layout>
+                <v-flex xs12>
+                  <v-data-table
+                    v-if="selectedItemSubdivisionList !== null"
+                    :headers="headers"
+                    :items="getSelectSubdivisionWorkerGroup"
+                  >
+                    <template v-slot:items="props">
+                      <td align="center">{{ props.index + 1 }}</td>
+                      <td align="left" class="px-0">
+                        <table>
+                          <tr>
+                            <td>{{ props.item.full_name }}</td>
+                          </tr>
+                          <tr>
+                            <td>{{ props.item.position }}</td>
+                          </tr>
+                        </table>
+                      </td>
+                      <td align="center">{{ props.item.in }}</td>
+                      <td valign="bottom" class="px-0">
+                        <table>
+                          <tbody>
+                            <tr>
+                              <td align="center">План</td>
+                            </tr>
+                            <tr>
+                              <td align="center">Факт</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </td>
+                      <td class="px-0">
+                        <table class="v-table">
+                          <thead>
+                            <tr>
+                              <th v-for="(day, index) in getDaysToday" v-bind:key="index" align="center">
+                                {{ index + 1 }}
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td v-for="(day, index) in getDaysToday" v-bind:key="index" align="center">Я</td>
+                            </tr>
+                            <tr>
+                              <td v-for="(day, index) in getDaysToday" v-bind:key="index" align="center">8</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </td>
+                      <td valign="bottom" class="px-0" align="center">
+                        <table>
+                          <tbody>
+                          <tr>
+                            <td align="center">0</td>
+                          </tr>
+                          <tr>
+                            <td align="center">0</td>
+                          </tr>
+                          </tbody>
+                        </table>
+                      </td>
+                    </template>
+                  </v-data-table>
                 </v-flex>
               </v-layout>
             </v-container>
@@ -114,7 +132,7 @@
       </v-dialog>
     </v-toolbar>
     <v-data-table
-      :headers="headers"
+      :headers="headersTableTimesheet"
       :items="getTimesheetList"
       class="elevation-1"
     >
@@ -131,46 +149,71 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import LayoutMain from '../layouts/Main.vue'
 export default {
   name: 'PageTimesheet',
   components: {
     LayoutMain: LayoutMain
   },
-  data: () => ({
-    headers: [
-      { text: 'Наименование', value: 'name' },
-      { text: 'ФИО сотрудника', value: 'worker' },
-      { text: 'Действия', value: 'actions', align: 'center', sortable: false }
-    ],
-    searchTimeshhet: null,
-    dialogSaveTimesheet: false,
-    dialogSaveTimesheetDay: false,
-    calendarTypeTimesheet: 'month',
-    timesheet: {
-      name: null,
-      worker: null,
-      planned: [],
-      actual: []
-    },
-    statusTimesheetDayList: ['Рабочий', 'Выходной', 'Отпуск', 'Командировка', 'Больничный', 'Прогул'],
-    statusDialog: 'create',
-    timesheetPlanned: new Date().toJSON(),
-    timesheetActual: new Date().toJSON(),
-    clickTimesheetDay: null,
-    statusTimesheetDay: null
-  }),
+  data () {
+    return {
+      headersTableTimesheet: [
+        { text: 'Наименование', value: 'name' },
+        { text: 'Подразделение', value: 'subvision' },
+        { text: 'Действия', value: 'actions', align: 'center', sortable: false }
+      ],
+      headers: [
+        { text: '№пп', value: 'id' },
+        { text: 'Сотрудник/должность', value: 'worker' },
+        { text: 'Индентификатор', value: 'name', align: 'center' },
+        { text: 'Табель', value: 'type', align: 'center' },
+        { text: 'День/Часы', value: 'days', align: 'center', sortable: false },
+        { text: 'Итого', value: 'total', align: 'center' }
+      ],
+      searchTimeshhet: null,
+      dialogSaveTimesheet: false,
+      dialogSaveTimesheetDay: false,
+      timesheet: {
+        name: null,
+        subvision: null,
+        planned: [],
+        actual: []
+      },
+      statusTimesheetDayList: ['Рабочий', 'Выходной', 'Отпуск', 'Командировка', 'Больничный', 'Прогул'],
+      statusDialog: 'create',
+      statusTimesheetDay: null,
+      selectedItemSubdivisionList: null,
+      menuSetTimesheetDate: false,
+      setTimesheetDate: new Date().toISOString().substr(0, 7),
+      setTimesheetDaysCount: []
+    }
+  },
+  created () {
+    for (let i = 0; i < 30; i++) {
+      this.setTimesheetDaysCount.push({ name: i + 1, value: '' })
+    }
+  },
   computed: {
+    ...mapGetters({
+      getterSelectSubdivisionWorkerGroup: 'Worker/getSelectSubdivisionWorkerGroup'
+    }),
     getTimesheetList () {
       return this.$store.state.Timesheet.list
-    },
-    getCalendarTimesheetDate () {
-      return this.moment(this.timesheetPlanned).format('D MMMM YYYY')
     },
     getWorkersList () {
       return this.$store.state.Worker.list
     },
-    getTimesheetListDay () {
+    getSubdivisionList () {
+      return this.$store.state.Subdivision.list
+    },
+    getSelectSubdivisionWorkerGroup () {
+      return this.getterSelectSubdivisionWorkerGroup(this.selectedItemSubdivisionList)
+    },
+    getDaysToday () {
+      return this.setTimesheetDaysCount
+    },
+    getTimeDaysToday () {
       return []
     }
   },
@@ -184,7 +227,7 @@ export default {
         case 'create':
           this.$store.dispatch('Timesheet/create', {
             name: timesheet.name,
-            worker: timesheet.worker,
+            subvision: timesheet.subvision,
             planned: timesheet.planned,
             actual: timesheet.actual
           }).then(() => {
@@ -196,7 +239,7 @@ export default {
             id: timesheet.id,
             data: {
               name: timesheet.name,
-              worker: timesheet.worker,
+              subvision: timesheet.subvision,
               planned: timesheet.planned,
               actual: timesheet.actual
             }
@@ -205,36 +248,6 @@ export default {
           })
           break
       }
-    },
-    onClickTimesheetDay (day) {
-      this.dialogSaveTimesheetDay = true
-      this.clickTimesheetDay = day
-    },
-    onClickEditTimesheet (item) {
-      this.dialogSaveTimesheet = true
-      this.statusDialog = 'edit'
-      this.timesheet = Object.assign(this.timesheet, item)
-    },
-    onClickRemoveTimesheet (id) {
-      confirm('Вы точно хотите удалить это подраздление?') && this.$store.dispatch('Timesheet/remove', id)
-    },
-    onClickCalendarNext () {
-      this.$refs.calendarTimesheetPlanned.next()
-      this.$refs.calendarTimesheetActual.next()
-    },
-    onClickCalendarPrev () {
-      this.$refs.calendarTimesheetPlanned.prev()
-      this.$refs.calendarTimesheetActual.prev()
-    },
-    onClickDialogCancelTimesheetDay () {
-      this.dialogSaveTimesheetDay = false
-    },
-    onClickDialogSaveTimeSheetDay () {
-      this.timesheet.planned.push({
-        date: this.clickTimesheetDay.date,
-        status: this.statusTimesheetDay
-      })
-      this.dialogSaveTimesheetDay = false
     }
   }
 }
@@ -245,6 +258,25 @@ export default {
     &--calendar &__content {
       padding-left: 0;
       padding-right: 0;
+    }
+  }
+  .timesheet {
+    table {
+      &.v-table {
+        tbody {
+          td {
+            padding-left: 10px;
+            padding-right: 10px;
+          }
+        }
+
+        thead {
+          th {
+            padding-left: 10px;
+            padding-right: 10px;
+          }
+        }
+      }
     }
   }
 </style>
