@@ -86,6 +86,12 @@
                               <td align="center">План</td>
                             </tr>
                             <tr>
+                              <td align="center">План</td>
+                            </tr>
+                            <tr>
+                              <td align="center">Факт</td>
+                            </tr>
+                            <tr>
                               <td align="center">Факт</td>
                             </tr>
                           </tbody>
@@ -102,7 +108,6 @@
                           </thead>
                           <tbody>
                             <tr>
-
                               <td v-for="(day, index) in getDaysToday" v-bind:key="index" align="center">
                                 <v-edit-dialog
                                   :return-value.sync="day.value"
@@ -120,7 +125,41 @@
                               </td>
                             </tr>
                             <tr>
+                              <td v-for="(day, index) in getDaysToday" v-bind:key="day.time" align="center">
+                                <v-edit-dialog
+                                  :return-value.sync="day.time"
+                                  lazy
+                                > {{ day.time }}
+                                  <template v-slot:input>
+                                    <v-text-field
+                                      v-model="day.time"
+                                      label="Редактировать"
+                                      single-line
+                                      counter
+                                    ></v-text-field>
+                                  </template>
+                                </v-edit-dialog>
+                              </td>
+                            </tr>
+                            <tr>
                               <td v-for="(day, index) in getDaysToday" v-bind:key="index" align="center">
+                                <v-edit-dialog
+                                  :return-value.sync="day.value"
+                                  lazy
+                                > {{ day.value }}
+                                  <template v-slot:input>
+                                    <v-text-field
+                                      v-model="day.value"
+                                      label="Редактировать"
+                                      single-line
+                                      counter
+                                    ></v-text-field>
+                                  </template>
+                                </v-edit-dialog>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td v-for="(day, index) in getDaysToday" v-bind:key="day.time" align="center">
                                 <v-edit-dialog
                                   :return-value.sync="day.time"
                                   lazy
@@ -220,7 +259,16 @@ export default {
   },
   created () {
     for (let i = 0; i < 30; i++) {
-      this.setTimesheetDaysCount.push({ name: i + 1, value: null, time: null })
+      this.setTimesheetDaysCount.push({
+        date: null,
+        worker: null,
+        days: {
+          name: i + 1,
+          number: null,
+          value: null,
+          time: null
+        }
+      })
     }
   },
   computed: {
