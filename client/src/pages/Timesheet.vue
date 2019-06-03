@@ -79,7 +79,7 @@
                         </table>
                       </td>
                       <td align="center">{{ props.item.in }}</td>
-                      <td valign="bottom" class="px-0">
+                      <td valign="bottom" class="px-0" align="center">
                         <table>
                           <tbody>
                             <tr>
@@ -166,10 +166,10 @@ export default {
       headers: [
         { text: '№пп', value: 'id' },
         { text: 'Сотрудник/должность', value: 'worker' },
-        { text: 'Индентификатор', value: 'name', align: 'center' },
-        { text: 'Табель', value: 'type', align: 'center' },
+        { text: 'Индентификатор', value: 'name', align: 'center', sortable: false },
+        { text: 'Табель', value: 'type', align: 'center', sortable: false },
         { text: 'День/Часы', value: 'days', align: 'center', sortable: false },
-        { text: 'Итого', value: 'total', align: 'center' }
+        { text: 'Итого', value: 'total', align: 'center, sortable: false' }
       ],
       searchTimeshhet: null,
       dialogSaveTimesheet: false,
