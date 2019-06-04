@@ -62,6 +62,6 @@ export default {
   },
 
   [UPDATE] (state, payload) {
-    console.log(payload)
+    //
   }
 }

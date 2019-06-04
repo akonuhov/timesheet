@@ -214,7 +214,7 @@
     >
       <template v-slot:items="props">
         <td>{{ props.item.name }}</td>
-        <td>{{ props.item.worker }}</td>
+        <td>{{ props.item.subdivision }}</td>
         <td class="justify-center layout px-0">
           <v-icon small class="mr-2" @click="onClickEditTimesheet(props.item)">edit</v-icon>
           <v-icon small @click="onClickRemoveTimesheet(props.item.id)">delete</v-icon>
@@ -287,7 +287,7 @@ export default {
     },
     onClickSaveDialogTimeshhet () {
       let workerList = this.subdivisionWorkerGroup
-      this.$store.dispatch('Worker/update', workerList)
+      // this.$store.dispatch('Worker/update', workerList)
       // let timesheet = this.timesheet
       // switch (this.statusDialog) {
       //   case 'create':
