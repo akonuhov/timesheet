@@ -7,13 +7,26 @@
  */
 
 import Vue from 'vue'
-import { LIST, CREATE, REMOVE, EDIT } from './mutation-types'
+import { LIST, LIST_TIMESHEET, LIST_TIMESHEET_UPDATE, CREATE, REMOVE, EDIT, UPDATE } from './mutation-types'
 
 export const list = ({ commit }) => {
   return new Promise((resolve, reject) => {
     Vue.$http.get('/api/workers')
       .then(res => {
         commit(LIST, { res })
+        resolve(res)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
+
+export const listTimesheet = ({ commit }, date) => {
+  return new Promise((resolve, reject) => {
+    Vue.$http.get('/api/workers')
+      .then(res => {
+        commit(LIST_TIMESHEET, { res, date })
         resolve(res)
       })
       .catch(error => {
@@ -73,9 +86,30 @@ export const edit = ({ commit }, worker) => {
   })
 }
 
+export const listTimesheetUpdate = ({ commit }, timesheetList) => {
+  commit(LIST_TIMESHEET_UPDATE, timesheetList)
+}
+
+export const update = ({ commit }, workerList) => {
+  console.log(JSON.stringify(workerList))
+  return new Promise((resolve, reject) => {
+    Vue.$http.post('/api/workers/update', workerList)
+      .then(res => {
+        commit(UPDATE, res)
+        resolve(res)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
+
 export default {
   list,
+  listTimesheet,
+  listTimesheetUpdate,
   create,
   remove,
-  edit
+  edit,
+  update
 }

@@ -11,20 +11,9 @@
       "type": "string",
       "required": true
     },
-    "worker": {
+    "subdivision": {
       "type": "string",
       "required": true
-    },
-    "planned": {
-      "type": [
-        "object"
-      ],
-      "required": true
-    },
-    "actual": {
-      "type": [
-        "object"
-      ]
     }
   },
   "validations": [],

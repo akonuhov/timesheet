@@ -27,6 +27,7 @@
                 item-text="name"
                 label="Подразделение"
                 prepend-icon="work"
+                @change="onChangeSubdivisionSelect"
               ></v-select>
             </v-flex>
             <v-flex xs3 class="ml-2">
@@ -101,21 +102,22 @@
                         <table class="v-table">
                           <thead>
                             <tr>
-                              <th v-for="(day, index) in getDaysToday" v-bind:key="index" align="center">
-                                {{ index + 1 }}
+                              <th v-for="(item, index) in props.item.timesheet.plan.days" v-bind:key="index" align="center">
+                                {{ item.number }}
                               </th>
                             </tr>
                           </thead>
                           <tbody>
                             <tr>
-                              <td v-for="(day, index) in getDaysToday" v-bind:key="index" align="center">
+                              <td v-for="(item, index) in props.item.timesheet.plan.days" v-bind:key="index" align="center">
                                 <v-edit-dialog
-                                  :return-value.sync="day.value"
+                                  :return-value.sync="item.value"
+                                  @save="onSaveTimeshhetPlanStatus"
                                   lazy
-                                > {{ day.value }}
+                                > {{ item.status }}
                                   <template v-slot:input>
                                     <v-text-field
-                                      v-model="day.value"
+                                      v-model="item.status"
                                       label="Редактировать"
                                       single-line
                                       counter
@@ -125,14 +127,14 @@
                               </td>
                             </tr>
                             <tr>
-                              <td v-for="(day, index) in getDaysToday" v-bind:key="index" align="center">
+                              <td v-for="(item, index) in props.item.timesheet.plan.days" v-bind:key="index" align="center">
                                 <v-edit-dialog
-                                  :return-value.sync="day.time"
+                                  :return-value.sync="item.time"
                                   lazy
-                                > {{ day.time }}
+                                > {{ item.time }}
                                   <template v-slot:input>
                                     <v-text-field
-                                      v-model="day.time"
+                                      v-model="item.time"
                                       label="Редактировать"
                                       single-line
                                       counter
@@ -142,14 +144,14 @@
                               </td>
                             </tr>
                             <tr>
-                              <td v-for="(day, index) in getDaysToday" v-bind:key="index" align="center">
+                              <td v-for="(item, index) in props.item.timesheet.actual.days" v-bind:key="index" align="center">
                                 <v-edit-dialog
-                                  :return-value.sync="day.value"
+                                  :return-value.sync="item.status"
                                   lazy
-                                > {{ day.value }}
+                                > {{ item.status }}
                                   <template v-slot:input>
                                     <v-text-field
-                                      v-model="day.value"
+                                      v-model="item.status"
                                       label="Редактировать"
                                       single-line
                                       counter
@@ -159,7 +161,7 @@
                               </td>
                             </tr>
                             <tr>
-                              <td v-for="(day, index) in getDaysToday" v-bind:key="index" align="center">
+                              <td v-for="(day, index) in props.item.timesheet.actual.days" v-bind:key="index" align="center">
                                 <v-edit-dialog
                                   :return-value.sync="day.time"
                                   lazy
@@ -250,10 +252,9 @@ export default {
       dialogSaveTimesheetDay: false,
       timesheet: {
         name: null,
-        subvision: null,
-        planned: [],
-        actual: []
+        subvision: null
       },
+      subdivisionWorkerGroup: [],
       statusTimesheetDayList: ['Рабочий', 'Выходной', 'Отпуск', 'Командировка', 'Больничный', 'Прогул'],
       statusDialog: 'create',
       statusTimesheetDay: null,
@@ -261,11 +262,6 @@ export default {
       menuSetTimesheetDate: false,
       setTimesheetDate: new Date().toISOString().substr(0, 7),
       setTimesheetDaysCount: []
-    }
-  },
-  created () {
-    for (let i = 0; i < 30; i++) {
-      this.setTimesheetDaysCount.push({ name: i + 1, value: null, time: null })
     }
   },
   computed: {
@@ -282,13 +278,7 @@ export default {
       return this.$store.state.Subdivision.list
     },
     getSelectSubdivisionWorkerGroup () {
-      return this.getterSelectSubdivisionWorkerGroup(this.selectedItemSubdivisionList)
-    },
-    getDaysToday () {
-      return this.setTimesheetDaysCount
-    },
-    getTimeDaysToday () {
-      return []
+      return this.subdivisionWorkerGroup
     }
   },
   methods: {
@@ -296,32 +286,40 @@ export default {
       this.dialogSaveTimesheet = false
     },
     onClickSaveDialogTimeshhet () {
-      let timesheet = this.timesheet
-      switch (this.statusDialog) {
-        case 'create':
-          this.$store.dispatch('Timesheet/create', {
-            name: timesheet.name,
-            subvision: timesheet.subvision,
-            planned: timesheet.planned,
-            actual: timesheet.actual
-          }).then(() => {
-            this.dialogSaveTimesheet = false
-          })
-          break
-        case 'edit':
-          this.$store.dispatch('Timesheet/edit', {
-            id: timesheet.id,
-            data: {
-              name: timesheet.name,
-              subvision: timesheet.subvision,
-              planned: timesheet.planned,
-              actual: timesheet.actual
-            }
-          }).then(() => {
-            this.dialogSaveTimesheet = false
-          })
-          break
-      }
+      let workerList = this.subdivisionWorkerGroup
+      this.$store.dispatch('Worker/update', workerList)
+      // let timesheet = this.timesheet
+      // switch (this.statusDialog) {
+      //   case 'create':
+      //     this.$store.dispatch('Timesheet/create', {
+      //       name: timesheet.name,
+      //       subvision: timesheet.subvision
+      //     }).then(() => {
+      //       this.dialogSaveTimesheet = false
+      //     })
+      //     this.$store.dispatch('Timesheet/update', workerList)
+      //     break
+      //   case 'edit':
+      //     this.$store.dispatch('Timesheet/edit', {
+      //       id: timesheet.id,
+      //       data: {
+      //         name: timesheet.name,
+      //         subvision: timesheet.subvision
+      //       }
+      //     }).then(() => {
+      //       this.dialogSaveTimesheet = false
+      //     })
+      //     break
+      // }
+    },
+    onChangeSubdivisionSelect () {
+      this.$store.dispatch('Worker/listTimesheet', this.setTimesheetDate)
+        .then(() => {
+          this.subdivisionWorkerGroup = [].concat(this.getterSelectSubdivisionWorkerGroup(this.selectedItemSubdivisionList, this.setTimesheetDate))
+        })
+    },
+    onSaveTimeshhetPlanStatus () {
+      this.$store.dispatch('Worker/listTimesheetUpdate', this.subdivisionWorkerGroup)
     }
   }
 }

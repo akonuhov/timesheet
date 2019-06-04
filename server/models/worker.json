@@ -24,7 +24,16 @@
       "required": true
     },
     "timesheet": {
-      "type": "string"
+      "plan": {
+        "type": [
+          "array"
+        ]
+      },
+      "acrual": {
+        "type": [
+          "array"
+        ]
+      }
     }
   },
   "validations": [],
