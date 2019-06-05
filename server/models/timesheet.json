@@ -7,11 +7,11 @@
     "validateUpsert": true
   },
   "properties": {
-    "name": {
+    "subdivision": {
       "type": "string",
       "required": true
     },
-    "subdivision": {
+    "date": {
       "type": "string",
       "required": true
     }

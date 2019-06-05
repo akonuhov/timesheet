@@ -56,151 +56,12 @@
               </v-menu>
             </v-flex>
             <v-spacer></v-spacer>
-            <v-btn dark flat @click="onClickSaveDialogTimeshhet">{{ statusDialog === 'create' ? 'Добавить' : 'Сохранить' }}</v-btn>
+            <v-btn dark flat @click="onClickSaveTimesheet">{{ statusDialog === 'create' ? 'Добавить' : 'Сохранить' }}</v-btn>
           </v-toolbar>
           <v-card-text class="timesheet">
             <v-container grid-list-xl fluid fill-height>
               <v-layout row wrap>
-                <v-flex xs12>
-                  <v-data-table
-                    v-if="selectedItemSubdivisionList !== null"
-                    :headers="headers"
-                    :items="getSelectSubdivisionWorkerGroup"
-                  >
-                    <template v-slot:items="props">
-                      <td align="center">{{ props.index + 1 }}</td>
-                      <td align="left" class="px-0">
-                        <table>
-                          <tr>
-                            <td>{{ props.item.full_name }}</td>
-                          </tr>
-                          <tr>
-                            <td>{{ props.item.position }}</td>
-                          </tr>
-                        </table>
-                      </td>
-                      <td align="center">{{ props.item.in }}</td>
-                      <td valign="bottom" class="px-0" align="center">
-                        <table>
-                          <tbody>
-                            <tr>
-                              <td align="center">План</td>
-                            </tr>
-                            <tr>
-                              <td align="center">План</td>
-                            </tr>
-                            <tr>
-                              <td align="center">Факт</td>
-                            </tr>
-                            <tr>
-                              <td align="center">Факт</td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </td>
-                      <td class="px-0">
-                        <table class="v-table">
-                          <thead>
-                            <tr>
-                              <th v-for="(item, index) in props.item.timesheet.plan.days" v-bind:key="index" align="center">
-                                {{ item.number }}
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <tr>
-                              <td v-for="(item, index) in props.item.timesheet.plan.days" v-bind:key="index" align="center">
-                                <v-edit-dialog
-                                  :return-value.sync="item.value"
-                                  @save="onSaveTimeshhetPlanStatus"
-                                  lazy
-                                > {{ item.status }}
-                                  <template v-slot:input>
-                                    <v-text-field
-                                      v-model="item.status"
-                                      label="Редактировать"
-                                      single-line
-                                      counter
-                                    ></v-text-field>
-                                  </template>
-                                </v-edit-dialog>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td v-for="(item, index) in props.item.timesheet.plan.days" v-bind:key="index" align="center">
-                                <v-edit-dialog
-                                  :return-value.sync="item.time"
-                                  lazy
-                                > {{ item.time }}
-                                  <template v-slot:input>
-                                    <v-text-field
-                                      v-model="item.time"
-                                      label="Редактировать"
-                                      single-line
-                                      counter
-                                    ></v-text-field>
-                                  </template>
-                                </v-edit-dialog>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td v-for="(item, index) in props.item.timesheet.actual.days" v-bind:key="index" align="center">
-                                <v-edit-dialog
-                                  :return-value.sync="item.status"
-                                  lazy
-                                > {{ item.status }}
-                                  <template v-slot:input>
-                                    <v-text-field
-                                      v-model="item.status"
-                                      label="Редактировать"
-                                      single-line
-                                      counter
-                                    ></v-text-field>
-                                  </template>
-                                </v-edit-dialog>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td v-for="(day, index) in props.item.timesheet.actual.days" v-bind:key="index" align="center">
-                                <v-edit-dialog
-                                  :return-value.sync="day.time"
-                                  lazy
-                                > {{ day.time }}
-                                  <template v-slot:input>
-                                    <v-text-field
-                                      v-model="day.time"
-                                      label="Редактировать"
-                                      single-line
-                                      counter
-                                    ></v-text-field>
-                                  </template>
-                                </v-edit-dialog>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </td>
-                      <td valign="bottom" class="px-0" align="center">
-                        <table>
-                          <tbody>
-                          <tr>
-                            <td align="center">0</td>
-                          </tr>
-                          <tr>
-                            <td align="center">0</td>
-                          </tr>
-                          <tr>
-                            <td align="center">0</td>
-                          </tr>
-                          <tr>
-                            <td align="center">0</td>
-                          </tr>
-                          </tbody>
-                        </table>
-                      </td>
-                    </template>
-                  </v-data-table>
-                </v-flex>
+                <timesheet v-if="selectedItemSubdivisionList !== null" :workersList="getSelectSubdivisionWorkerGroup"></timesheet>
               </v-layout>
             </v-container>
           </v-card-text>
@@ -227,41 +88,27 @@
 <script>
 import { mapGetters } from 'vuex'
 import LayoutMain from '../layouts/Main.vue'
+import Timesheet from '../components/timesheet'
 export default {
   name: 'PageTimesheet',
   components: {
-    LayoutMain: LayoutMain
+    LayoutMain,
+    Timesheet
   },
   data () {
     return {
       headersTableTimesheet: [
-        { text: 'Наименование', value: 'name' },
-        { text: 'Подразделение', value: 'subvision' },
+        { text: 'Подразделение', value: 'subdivision' },
+        { text: 'Дата', value: 'date' },
         { text: 'Действия', value: 'actions', align: 'center', sortable: false }
-      ],
-      headers: [
-        { text: '№пп', value: 'id' },
-        { text: 'Сотрудник/должность', value: 'worker' },
-        { text: 'Индентификатор', value: 'name', align: 'center', sortable: false },
-        { text: 'Табель', value: 'type', align: 'center', sortable: false },
-        { text: 'День/Часы', value: 'days', align: 'center', sortable: false },
-        { text: 'Итого', value: 'total', align: 'center, sortable: false' }
       ],
       searchTimeshhet: null,
       dialogSaveTimesheet: false,
-      dialogSaveTimesheetDay: false,
-      timesheet: {
-        name: null,
-        subvision: null
-      },
       subdivisionWorkerGroup: [],
-      statusTimesheetDayList: ['Рабочий', 'Выходной', 'Отпуск', 'Командировка', 'Больничный', 'Прогул'],
       statusDialog: 'create',
-      statusTimesheetDay: null,
-      selectedItemSubdivisionList: null,
       menuSetTimesheetDate: false,
       setTimesheetDate: new Date().toISOString().substr(0, 7),
-      setTimesheetDaysCount: []
+      selectedItemSubdivisionList: null
     }
   },
   computed: {
@@ -285,41 +132,23 @@ export default {
     onClickCloseDialogTimeshhet () {
       this.dialogSaveTimesheet = false
     },
-    onClickSaveDialogTimeshhet () {
-      let workerList = this.subdivisionWorkerGroup
-      // this.$store.dispatch('Worker/update', workerList)
-      // let timesheet = this.timesheet
-      // switch (this.statusDialog) {
-      //   case 'create':
-      //     this.$store.dispatch('Timesheet/create', {
-      //       name: timesheet.name,
-      //       subvision: timesheet.subvision
-      //     }).then(() => {
-      //       this.dialogSaveTimesheet = false
-      //     })
-      //     this.$store.dispatch('Timesheet/update', workerList)
-      //     break
-      //   case 'edit':
-      //     this.$store.dispatch('Timesheet/edit', {
-      //       id: timesheet.id,
-      //       data: {
-      //         name: timesheet.name,
-      //         subvision: timesheet.subvision
-      //       }
-      //     }).then(() => {
-      //       this.dialogSaveTimesheet = false
-      //     })
-      //     break
-      // }
-    },
     onChangeSubdivisionSelect () {
       this.$store.dispatch('Worker/listTimesheet', this.setTimesheetDate)
         .then(() => {
-          this.subdivisionWorkerGroup = [].concat(this.getterSelectSubdivisionWorkerGroup(this.selectedItemSubdivisionList, this.setTimesheetDate))
+          this.subdivisionWorkerGroup = this.getterSelectSubdivisionWorkerGroup(this.selectedItemSubdivisionList)
         })
     },
-    onSaveTimeshhetPlanStatus () {
-      this.$store.dispatch('Worker/listTimesheetUpdate', this.subdivisionWorkerGroup)
+    onClickSaveTimesheet () {
+      this.$store.dispatch('Timesheet/create', { subdivision: this.selectedItemSubdivisionList, date: this.setTimesheetDate })
+    },
+    onClickEditTimesheet (item) {
+      this.dialogSaveTimesheet = true
+      this.statusDialog = 'edit'
+      this.selectedItemSubdivisionList = item.subdivision
+      this.setTimesheetDate = item.date
+    },
+    onClickRemoveTimesheet (id) {
+      confirm('Вы точно хотите удалить этого сотрудника?') && this.$store.dispatch('Timesheet/remove', id)
     }
   }
 }

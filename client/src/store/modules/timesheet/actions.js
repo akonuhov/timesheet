@@ -24,19 +24,19 @@ export const list = ({ commit }) => {
 
 export const create = ({ commit }, timesheet) => {
   return new Promise((resolve, reject) => {
-    Vue.$http.post('/api/timesheets', {
-      name: timesheet.name,
-      worker: timesheet.worker,
-      planned: timesheet.planned,
-      actual: timesheet.actual
-    })
-      .then(res => {
-        commit(CREATE, { res })
-        resolve(res)
+    if (timesheet.name) {
+      Vue.$http.post('/api/timesheets', {
+        subdivision: timesheet.subdivision,
+        date: timesheet.date
       })
-      .catch(error => {
-        reject(error)
-      })
+        .then(res => {
+          commit(CREATE, { res })
+          resolve(res)
+        })
+        .catch(error => {
+          reject(error)
+        })
+    }
   })
 }
 
@@ -54,13 +54,10 @@ export const remove = ({ commit }, timesheetId) => {
 }
 
 export const edit = ({ commit }, timesheet) => {
-  console.log(timesheet)
   return new Promise((resolve, reject) => {
     Vue.$http.put('/api/timesheets/' + timesheet.id, {
-      name: timesheet.data.name,
-      worker: timesheet.data.worker,
-      planned: timesheet.data.planned,
-      actual: timesheet.data.actual
+      subdivision: timesheet.subdivision,
+      date: timesheet.date
     })
       .then(res => {
         commit(EDIT, timesheet)
