@@ -24,7 +24,7 @@ export const list = ({ commit }) => {
 
 export const create = ({ commit }, timesheet) => {
   return new Promise((resolve, reject) => {
-    if (timesheet.name) {
+    if (timesheet.subdivision && timesheet.date) {
       Vue.$http.post('/api/timesheets', {
         subdivision: timesheet.subdivision,
         date: timesheet.date
