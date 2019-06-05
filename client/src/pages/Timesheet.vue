@@ -11,7 +11,7 @@
       ></v-text-field>
       <v-dialog v-model="dialogSaveTimesheet" fullscreen hide-overlay transition="dialog-bottom-transition">
         <template v-slot:activator="{ on }">
-          <v-btn dark color="primary" class="ml-5" v-on="on">Добавить<v-icon right dark>add</v-icon></v-btn>
+          <v-btn dark color="primary" class="ml-5" v-on="on" @click="onClickCreateTimesheet">Добавить<v-icon right dark>add</v-icon></v-btn>
         </template>
         <v-card>
           <v-toolbar dark color="primary">
@@ -74,8 +74,8 @@
       class="elevation-1"
     >
       <template v-slot:items="props">
-        <td>{{ props.item.name }}</td>
         <td>{{ props.item.subdivision }}</td>
+        <td>{{ props.item.date }}</td>
         <td class="justify-center layout px-0">
           <v-icon small class="mr-2" @click="onClickEditTimesheet(props.item)">edit</v-icon>
           <v-icon small @click="onClickRemoveTimesheet(props.item.id)">delete</v-icon>
@@ -108,7 +108,8 @@ export default {
       statusDialog: 'create',
       menuSetTimesheetDate: false,
       setTimesheetDate: new Date().toISOString().substr(0, 7),
-      selectedItemSubdivisionList: null
+      selectedItemSubdivisionList: null,
+      timesheetId: null
     }
   },
   computed: {
@@ -139,19 +140,47 @@ export default {
         })
     },
     onClickSaveTimesheet () {
-      this.$store.dispatch('Timesheet/create', { subdivision: this.selectedItemSubdivisionList, date: this.setTimesheetDate })
-        .then(() => {
-          this.dialogSaveTimesheet = true
-        })
+      switch (this.statusDialog) {
+        case 'create':
+          this.$store.dispatch('Timesheet/create', {
+            subdivision: this.selectedItemSubdivisionList,
+            date: this.setTimesheetDate
+          })
+            .then(() => {
+              this.dialogSaveTimesheet = false
+            })
+          break
+        case 'edit':
+          this.$store.dispatch('Timesheet/edit', {
+            id: this.timesheetId,
+            data: {
+              subdivision: this.selectedItemSubdivisionList,
+              date: this.setTimesheetDate
+            }
+          })
+            .then(() => {
+              this.dialogSaveTimesheet = false
+            })
+          break
+      }
     },
     onClickEditTimesheet (item) {
       this.dialogSaveTimesheet = true
       this.statusDialog = 'edit'
+      this.timesheetId = item.id
       this.selectedItemSubdivisionList = item.subdivision
       this.setTimesheetDate = item.date
+      this.$store.dispatch('Worker/listTimesheet', this.setTimesheetDate)
+        .then(() => {
+          this.subdivisionWorkerGroup = this.getterSelectSubdivisionWorkerGroup(this.selectedItemSubdivisionList)
+        })
     },
     onClickRemoveTimesheet (id) {
       confirm('Вы точно хотите удалить этого сотрудника?') && this.$store.dispatch('Timesheet/remove', id)
+    },
+    onClickCreateTimesheet () {
+      this.statusDialog = 'create'
+      this.selectedItemSubdivisionList = null
     }
   }
 }

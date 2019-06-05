@@ -56,8 +56,8 @@ export const remove = ({ commit }, timesheetId) => {
 export const edit = ({ commit }, timesheet) => {
   return new Promise((resolve, reject) => {
     Vue.$http.put('/api/timesheets/' + timesheet.id, {
-      subdivision: timesheet.subdivision,
-      date: timesheet.date
+      subdivision: timesheet.data.subdivision,
+      date: timesheet.data.date
     })
       .then(res => {
         commit(EDIT, timesheet)
