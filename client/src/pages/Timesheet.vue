@@ -140,6 +140,9 @@ export default {
     },
     onClickSaveTimesheet () {
       this.$store.dispatch('Timesheet/create', { subdivision: this.selectedItemSubdivisionList, date: this.setTimesheetDate })
+        .then(() => {
+          this.dialogSaveTimesheet = true
+        })
     },
     onClickEditTimesheet (item) {
       this.dialogSaveTimesheet = true
