@@ -140,15 +140,12 @@ export default {
         })
     },
     onClickSaveTimesheet () {
+      this.$store.dispatch('Worker/update', this.subdivisionWorkerGroup)
+        .then(() => {
+          this.dialogSaveTimesheet = false
+        })
       switch (this.statusDialog) {
         case 'create':
-          this.$store.dispatch('Timesheet/create', {
-            subdivision: this.selectedItemSubdivisionList,
-            date: this.setTimesheetDate
-          })
-            .then(() => {
-              this.dialogSaveTimesheet = false
-            })
           this.$store.dispatch('Timesheet/create', {
             subdivision: this.selectedItemSubdivisionList,
             date: this.setTimesheetDate

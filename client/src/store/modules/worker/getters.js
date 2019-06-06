@@ -9,7 +9,8 @@
 export default {
   getSelectSubdivisionWorkerGroup: state => (name, date) => {
     if (name && date) {
-      return state.list.filter(item => item.subdivision_number === name)
+      let stateListCopy = JSON.parse(JSON.stringify(state.list))
+      return stateListCopy.filter(item => item.subdivision_number === name)
     } else {
       return []
     }

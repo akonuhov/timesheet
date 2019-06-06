@@ -75,7 +75,7 @@ export const edit = ({ commit }, worker) => {
 
 export const update = ({ commit }, workerList) => {
   return new Promise((resolve, reject) => {
-    Vue.$http.post('/api/workers/update', workerList)
+    Vue.$http.post('/api/workers/update', { workerList })
       .then(res => {
         commit(UPDATE, res)
         resolve(res)
