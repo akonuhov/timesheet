@@ -75,7 +75,7 @@
     >
       <template v-slot:items="props">
         <td>{{ props.item.subdivision }}</td>
-        <td>{{ props.item.date }}</td>
+        <td>{{ formatDateTimesheet(props.item.date) }}</td>
         <td class="justify-center layout px-0">
           <v-icon small class="mr-2" @click="onClickEditTimesheet(props.item)">edit</v-icon>
           <v-icon small @click="onClickRemoveTimesheet(props.item.id)">delete</v-icon>
@@ -195,6 +195,9 @@ export default {
         .then(() => {
           this.subdivisionWorkerGroup = this.getterSelectSubdivisionWorkerGroup(this.selectedItemSubdivisionList, this.setTimesheetDate)
         })
+    },
+    formatDateTimesheet (date) {
+      return this.moment(date).format('MMMM YYYY')
     }
   }
 }
