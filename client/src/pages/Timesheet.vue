@@ -49,7 +49,7 @@
                 </template>
                 <v-date-picker v-model="setTimesheetDate"
                                no-title
-                               @input="menuSetTimesheetDate = false"
+                               @input="onChangeTimesheetDateSelect"
                                type="month"
                                locale="ru"
                                ></v-date-picker>
@@ -134,14 +134,21 @@ export default {
       this.dialogSaveTimesheet = false
     },
     onChangeSubdivisionSelect () {
-      this.$store.dispatch('Worker/listTimesheet', this.setTimesheetDate)
+      this.$store.dispatch('Worker/list', this.setTimesheetDate)
         .then(() => {
-          this.subdivisionWorkerGroup = this.getterSelectSubdivisionWorkerGroup(this.selectedItemSubdivisionList)
+          this.subdivisionWorkerGroup = this.getterSelectSubdivisionWorkerGroup(this.selectedItemSubdivisionList, this.setTimesheetDate)
         })
     },
     onClickSaveTimesheet () {
       switch (this.statusDialog) {
         case 'create':
+          this.$store.dispatch('Timesheet/create', {
+            subdivision: this.selectedItemSubdivisionList,
+            date: this.setTimesheetDate
+          })
+            .then(() => {
+              this.dialogSaveTimesheet = false
+            })
           this.$store.dispatch('Timesheet/create', {
             subdivision: this.selectedItemSubdivisionList,
             date: this.setTimesheetDate
@@ -170,9 +177,9 @@ export default {
       this.timesheetId = item.id
       this.selectedItemSubdivisionList = item.subdivision
       this.setTimesheetDate = item.date
-      this.$store.dispatch('Worker/listTimesheet', this.setTimesheetDate)
+      this.$store.dispatch('Worker/list', this.setTimesheetDate)
         .then(() => {
-          this.subdivisionWorkerGroup = this.getterSelectSubdivisionWorkerGroup(this.selectedItemSubdivisionList)
+          this.subdivisionWorkerGroup = this.getterSelectSubdivisionWorkerGroup(this.selectedItemSubdivisionList, this.setTimesheetDate)
         })
     },
     onClickRemoveTimesheet (id) {
@@ -181,6 +188,13 @@ export default {
     onClickCreateTimesheet () {
       this.statusDialog = 'create'
       this.selectedItemSubdivisionList = null
+    },
+    onChangeTimesheetDateSelect () {
+      this.menuSetTimesheetDate = false
+      this.$store.dispatch('Worker/list', this.setTimesheetDate)
+        .then(() => {
+          this.subdivisionWorkerGroup = this.getterSelectSubdivisionWorkerGroup(this.selectedItemSubdivisionList, this.setTimesheetDate)
+        })
     }
   }
 }

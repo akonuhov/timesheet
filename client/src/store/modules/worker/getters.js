@@ -7,9 +7,9 @@
  */
 
 export default {
-  getSelectSubdivisionWorkerGroup: state => name => {
-    if (name) {
-      return state.list_timesheet.filter(item => item.subdivision_number === name)
+  getSelectSubdivisionWorkerGroup: state => (name, date) => {
+    if (name && date) {
+      return state.list.filter(item => item.subdivision_number === name)
     } else {
       return []
     }

@@ -6,6 +6,5 @@
  */
 
 export default {
-  list: [],
-  list_timesheet: []
+  list: []
 }

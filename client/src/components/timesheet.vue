@@ -39,21 +39,22 @@
           <table class="v-table">
             <thead>
             <tr>
-              <th v-for="(item, index) in props.item.timesheet.plan.days" v-bind:key="index" align="center">
+              <th v-for="(item, index) in props.item.timesheet.plan[0].days" v-bind:key="index" align="center">
                 {{ item.number }}
               </th>
             </tr>
             </thead>
             <tbody>
             <tr>
-              <td v-for="(item, index) in props.item.timesheet.plan.days" v-bind:key="index" align="center">
+              <td v-for="(item, index) in props.item.timesheet.plan[0].days" v-bind:key="index" align="center">
                 <v-edit-dialog
-                  :return-value.sync="item.value"
+                  :return-value.sync="item.status"
                   lazy
                 > {{ item.status }}
                   <template v-slot:input>
                     <v-text-field
                       v-model="item.status"
+                      @input="onInputTimesheetPlanStatus"
                       label="Редактировать"
                       single-line
                       counter
@@ -63,7 +64,7 @@
               </td>
             </tr>
             <tr>
-              <td v-for="(item, index) in props.item.timesheet.plan.days" v-bind:key="index" align="center">
+              <td v-for="(item, index) in props.item.timesheet.plan[0].days" v-bind:key="index" align="center">
                 <v-edit-dialog
                   :return-value.sync="item.time"
                   lazy
@@ -80,7 +81,7 @@
               </td>
             </tr>
             <tr>
-              <td v-for="(item, index) in props.item.timesheet.actual.days" v-bind:key="index" align="center">
+              <td v-for="(item, index) in props.item.timesheet.actual[0].days" v-bind:key="index" align="center">
                 <v-edit-dialog
                   :return-value.sync="item.status"
                   lazy
@@ -97,7 +98,7 @@
               </td>
             </tr>
             <tr>
-              <td v-for="(day, index) in props.item.timesheet.actual.days" v-bind:key="index" align="center">
+              <td v-for="(day, index) in props.item.timesheet.actual[0].days" v-bind:key="index" align="center">
                 <v-edit-dialog
                   :return-value.sync="day.time"
                   lazy
@@ -140,6 +141,7 @@
 </template>
 
 <script>
+// import timsheetArray from '../const/timesheet'
 export default {
   name: 'Timesheet',
   props: {
@@ -160,6 +162,11 @@ export default {
   computed: {
     getSelectSubdivisionWorkerGroup () {
       return this.workersList
+    }
+  },
+  methods: {
+    onInputTimesheetPlanStatus () {
+      // this.$store.commit('Worker/UPDATE', this.workersList)
     }
   }
 }

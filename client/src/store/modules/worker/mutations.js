@@ -6,15 +6,13 @@
  * account module.
  */
 
-import { LIST, LIST_TIMESHEET, LIST_TIMESHEET_UPDATE, CREATE, REMOVE, EDIT, UPDATE } from './mutation-types'
+import { LIST, CREATE, REMOVE, EDIT, UPDATE } from './mutation-types'
+import moment from 'moment'
 
 export default {
   [LIST] (state, payload) {
-    state.list = payload.res.data
-  },
-
-  [LIST_TIMESHEET] (state, payload) {
-    function getDays (count) {
+    function getDays () {
+      const count = payload.date ? moment(payload.date, 'YYYY-MM').daysInMonth() : moment(new Date().toISOString().substr(0, 7), 'YYYY-MM').daysInMonth()
       let arrDays = []
       for (let i = 1; i <= count; i++) {
         arrDays.push({
@@ -27,25 +25,27 @@ export default {
       return arrDays
     }
     const schemaTimesheet = {
-      plan: {
-        date: payload.date,
-        days: getDays(30)
-      },
-      actual: {
-        date: payload.date,
-        days: getDays(30)
-      }
+      plan: [
+        {
+          date: new Date().toISOString().substr(0, 7),
+          days: getDays()
+        }
+      ],
+      actual: [
+        {
+          date: new Date().toISOString().substr(0, 7),
+          days: getDays()
+        }
+      ]
     }
     for (let index in payload.res.data) {
-      if (payload.res.data[index].timesheet !== 'object') {
+      if (typeof payload.res.data[index].timesheet !== 'object') {
         payload.res.data[index].timesheet = schemaTimesheet
+      } else {
+        payload.res.data[index].timesheet = Object.assign(payload.res.data[index].timesheet, schemaTimesheet)
       }
     }
-    state.list_timesheet = payload.res.data
-  },
-
-  [LIST_TIMESHEET_UPDATE] (state, payload) {
-    state.list_timesheet = Object.assign(state.list, payload)
+    state.list = payload.res.data
   },
 
   [CREATE] (state, payload) {
@@ -62,6 +62,6 @@ export default {
   },
 
   [UPDATE] (state, payload) {
-    //
+    state.list = { ...state.list, ...payload.data }
   }
 }

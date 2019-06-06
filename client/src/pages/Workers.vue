@@ -60,7 +60,6 @@
         <td>{{ props.item.in }}</td>
         <td>{{ props.item.subdivision_number }}</td>
         <td>{{ props.item.position }}</td>
-        <td>{{ props.item.timesheet }}</td>
         <td class="justify-center layout px-0">
           <v-icon
             small
@@ -94,7 +93,6 @@ export default {
       { text: 'Идентификационный номер', value: 'in' },
       { text: 'Подразделение', value: 'subdivision_number' },
       { text: 'Должность', value: 'position' },
-      { text: 'Рабочий табель', value: 'timesheet' },
       { text: 'Действия', value: 'actions', align: 'center', sortable: false }
     ],
     worker: {
