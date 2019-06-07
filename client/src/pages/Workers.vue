@@ -35,9 +35,6 @@
                 <v-flex>
                   <v-text-field v-model="worker.position" label="Должность"></v-text-field>
                 </v-flex>
-                <v-flex>
-                  <v-text-field v-model="worker.timesheet" label="Рабочий табель"></v-text-field>
-                </v-flex>
               </v-layout>
             </v-container>
           </v-card-text>
@@ -100,7 +97,10 @@ export default {
       subdivision_number: null,
       full_name: null,
       position: null,
-      timesheet: null
+      timesheet: {
+        actual: [],
+        plan: []
+      }
     },
     searchWorkers: null,
     editWorkerId: null,
@@ -134,7 +134,10 @@ export default {
             subdivision_number: worker.subdivision_number,
             full_name: worker.full_name,
             position: worker.position,
-            timesheet: worker.timesheet
+            timesheet: {
+              actual: [],
+              plan: []
+            }
           }).then(() => {
             this.dialogSaveWorker = false
           })
@@ -147,7 +150,10 @@ export default {
               subdivision_number: worker.subdivision_number,
               full_name: worker.full_name,
               position: worker.position,
-              timesheet: worker.timesheet
+              timesheet: {
+                actual: [],
+                plan: []
+              }
             }
           }).then(() => {
             this.dialogSaveWorker = false

@@ -141,7 +141,6 @@
 </template>
 
 <script>
-// import timsheetArray from '../const/timesheet'
 export default {
   name: 'Timesheet',
   props: {

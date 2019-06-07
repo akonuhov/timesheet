@@ -6,6 +6,8 @@
  * authorization module.
  */
 
+// import Transformer from '../../../utilities/transformers/api/workers/list'
+
 export default {
   getSelectSubdivisionWorkerGroup: state => (name, date) => {
     if (name && date) {

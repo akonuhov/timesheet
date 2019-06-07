@@ -13,7 +13,7 @@ export const list = ({ commit }, date) => {
   return new Promise((resolve, reject) => {
     Vue.$http.get('/api/workers')
       .then(res => {
-        commit(LIST, { res: res, date: date })
+        commit(LIST, { res: res, date: date || null })
         resolve(res)
       })
       .catch(error => {
@@ -75,7 +75,7 @@ export const edit = ({ commit }, worker) => {
 
 export const update = ({ commit }, workerList) => {
   return new Promise((resolve, reject) => {
-    Vue.$http.post('/api/workers/update', { workerList })
+    Vue.$http.post('/api/workers/update', workerList)
       .then(res => {
         commit(UPDATE, res)
         resolve(res)
