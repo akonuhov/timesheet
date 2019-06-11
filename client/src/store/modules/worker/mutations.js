@@ -42,7 +42,7 @@ export default {
       if (typeof payload.res.data[index].timesheet !== 'object') {
         payload.res.data[index].timesheet = schemaTimesheet
       } else {
-        payload.res.data[index].timesheet = Object.assign(schemaTimesheet, payload.res.data[index].timesheet)
+        payload.res.data[index].timesheet = Object.assign(payload.res.data[index].timesheet, schemaTimesheet)
       }
     }
     state.list = payload.res.data
