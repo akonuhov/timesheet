@@ -6,12 +6,12 @@
  * authorization module.
  */
 
-// import Transformer from '../../../utilities/transformers/api/workers/list'
+import Transformer from '../../../utilities/transformers/api/workers/list'
 
 export default {
   getSelectSubdivisionWorkerGroup: state => (name, date) => {
     if (name && date) {
-      let stateListCopy = JSON.parse(JSON.stringify(state.list))
+      let stateListCopy = Transformer.get(state.list)
       return stateListCopy.filter(item => item.subdivision_number === name)
     } else {
       return []

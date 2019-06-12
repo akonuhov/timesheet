@@ -6,7 +6,7 @@ export default class getWorkerList {
       in: worker.in,
       position: worker.position,
       subdivision_number: worker.subdivision_number,
-      timesheet: typeof worker.timesheet !== 'object' ? {
+      timesheet: {
         actual: worker.timesheet.actual.map(timesheet => ({
           date: timesheet.date,
           days: timesheet.days.map(day => ({
@@ -25,7 +25,7 @@ export default class getWorkerList {
             time: day.time
           }))
         }))
-      } : worker.timesheet
+      }
     }))
   }
   static post (workers) {

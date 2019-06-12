@@ -38,11 +38,24 @@ export default {
         }
       ]
     }
-    for (let index in payload.res.data) {
-      if (typeof payload.res.data[index].timesheet !== 'object') {
-        payload.res.data[index].timesheet = schemaTimesheet
+    for (let i in payload.res.data) {
+      if (payload.res.data[i].timesheet.plan.length > 0) {
+        for (let j in payload.res.data[i].timesheet.plan) {
+          if (payload.res.data[i].timesheet.plan[j].days.length > 0) {
+            for (let k = 0; k < payload.res.data[i].timesheet.plan[j].days.length; k++) {
+              schemaTimesheet.plan[0].days = schemaTimesheet.plan[0].days.filter(item => item.number !== payload.res.data[i].timesheet.plan[j].days[k].number)
+            }
+          }
+          if (payload.res.data[i].timesheet.actual[j].days.length > 0) {
+            for (let k = 0; k < payload.res.data[i].timesheet.actual[j].days.length; k++) {
+              schemaTimesheet.actual[0].days = schemaTimesheet.actual[0].days.filter(item => item.number !== payload.res.data[i].timesheet.actual[j].days[k].number)
+            }
+          }
+          payload.res.data[i].timesheet.plan[j].days = payload.res.data[i].timesheet.plan[j].days.concat(schemaTimesheet.plan[0].days)
+          payload.res.data[i].timesheet.actual[j].days = payload.res.data[i].timesheet.actual[j].days.concat(schemaTimesheet.actual[0].days)
+        }
       } else {
-        payload.res.data[index].timesheet = Object.assign(payload.res.data[index].timesheet, schemaTimesheet)
+        payload.res.data[i].timesheet = schemaTimesheet
       }
     }
     state.list = payload.res.data

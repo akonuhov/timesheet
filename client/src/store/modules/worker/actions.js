@@ -7,7 +7,7 @@
  */
 
 import Vue from 'vue'
-import { LIST, CREATE, REMOVE, EDIT, UPDATE } from './mutation-types'
+import { LIST, CREATE, REMOVE, EDIT } from './mutation-types'
 
 export const list = ({ commit }, date) => {
   return new Promise((resolve, reject) => {
@@ -74,16 +74,33 @@ export const edit = ({ commit }, worker) => {
 }
 
 export const update = ({ commit }, workerList) => {
-  return new Promise((resolve, reject) => {
-    Vue.$http.post('/api/workers/update', workerList)
+  function filterWorkerList (payload) {
+    for (let i in payload) {
+      if (payload[i].timesheet.plan.length > 0) {
+        for (let j in payload[i].timesheet.plan) {
+          payload[i].timesheet.plan[j].days = payload[i].timesheet.plan[j].days.filter(item => item.status !== null)
+          payload[i].timesheet.actual[j].days = payload[i].timesheet.actual[j].days.filter(item => item.status !== null)
+        }
+      }
+    }
+    return payload
+  }
+  let filterWorkersList = filterWorkerList(workerList)
+  for (let i = 0; i <= filterWorkersList.length; i++) {
+    Vue.$http.put('/api/workers/' + filterWorkersList[i].id, {
+      in: filterWorkersList[i].in,
+      subdivision_number: filterWorkersList[i].subdivision_number,
+      full_name: filterWorkersList[i].full_name,
+      position: filterWorkersList[i].position,
+      timesheet: filterWorkersList[i].timesheet
+    })
       .then(res => {
-        commit(UPDATE, res)
-        resolve(res)
+        commit(EDIT, { id: res.data.id, data: res.data })
       })
       .catch(error => {
-        reject(error)
+        return error
       })
-  })
+  }
 }
 
 export default {

@@ -140,10 +140,6 @@ export default {
         })
     },
     onClickSaveTimesheet () {
-      this.$store.dispatch('Worker/update', this.subdivisionWorkerGroup)
-        .then(() => {
-          this.dialogSaveTimesheet = false
-        })
       switch (this.statusDialog) {
         case 'create':
           this.$store.dispatch('Timesheet/create', {
@@ -167,6 +163,7 @@ export default {
             })
           break
       }
+      this.$store.dispatch('Worker/update', this.subdivisionWorkerGroup)
     },
     onClickEditTimesheet (item) {
       this.dialogSaveTimesheet = true
