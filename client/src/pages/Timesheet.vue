@@ -134,10 +134,7 @@ export default {
       this.dialogSaveTimesheet = false
     },
     onChangeSubdivisionSelect () {
-      this.$store.dispatch('Worker/list', this.setTimesheetDate)
-        .then(() => {
-          this.subdivisionWorkerGroup = this.getterSelectSubdivisionWorkerGroup(this.selectedItemSubdivisionList, this.setTimesheetDate)
-        })
+      this.subdivisionWorkerGroup = this.getterSelectSubdivisionWorkerGroup(this.selectedItemSubdivisionList)
     },
     onClickSaveTimesheet () {
       switch (this.statusDialog) {
@@ -171,10 +168,7 @@ export default {
       this.timesheetId = item.id
       this.selectedItemSubdivisionList = item.subdivision
       this.setTimesheetDate = item.date
-      this.$store.dispatch('Worker/list', this.setTimesheetDate)
-        .then(() => {
-          this.subdivisionWorkerGroup = this.getterSelectSubdivisionWorkerGroup(this.selectedItemSubdivisionList, this.setTimesheetDate)
-        })
+      this.subdivisionWorkerGroup = this.getterSelectSubdivisionWorkerGroup(this.selectedItemSubdivisionList)
     },
     onClickRemoveTimesheet (id) {
       confirm('Вы точно хотите удалить этого сотрудника?') && this.$store.dispatch('Timesheet/remove', id)
@@ -185,10 +179,7 @@ export default {
     },
     onChangeTimesheetDateSelect () {
       this.menuSetTimesheetDate = false
-      this.$store.dispatch('Worker/list', this.setTimesheetDate)
-        .then(() => {
-          this.subdivisionWorkerGroup = this.getterSelectSubdivisionWorkerGroup(this.selectedItemSubdivisionList, this.setTimesheetDate)
-        })
+      this.subdivisionWorkerGroup = this.getterSelectSubdivisionWorkerGroup(this.selectedItemSubdivisionList)
     },
     formatDateTimesheet (date) {
       return this.moment(date).format('MMMM YYYY')

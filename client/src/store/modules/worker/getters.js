@@ -9,8 +9,8 @@
 import Transformer from '../../../utilities/transformers/api/workers/list'
 
 export default {
-  getSelectSubdivisionWorkerGroup: state => (name, date) => {
-    if (name && date) {
+  getSelectSubdivisionWorkerGroup: state => name => {
+    if (name) {
       let stateListCopy = Transformer.get(state.list)
       return stateListCopy.filter(item => item.subdivision_number === name)
     } else {

@@ -71,7 +71,7 @@ export default {
 
   [EDIT] (state, payload) {
     let index = state.list.findIndex(item => item.id === payload.id)
-    state.list[index] = Object.assign(state.list[index], payload.data)
+    state.list[index] = payload.data
   },
 
   [UPDATE] (state, payload) {

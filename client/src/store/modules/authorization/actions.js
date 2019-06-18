@@ -8,6 +8,7 @@
 
 import Vue from 'vue'
 import { AUTH_REQUEST, AUTH_SUCCESS, AUTH_ERROR, REGISTER, LOGOUT } from './mutation-types'
+import store from '../../index'
 
 export const login = ({ commit }, user) => {
   return new Promise((resolve, reject) => {
@@ -58,8 +59,17 @@ export const logout = ({ commit }) => {
   })
 }
 
+export const check = ({ commit }) => {
+  return new Promise((resolve, reject) => {
+    store.dispatch('Subdivision/list')
+    store.dispatch('Worker/list')
+    store.dispatch('Timesheet/list')
+  })
+}
+
 export default {
   login,
   register,
-  logout
+  logout,
+  check
 }

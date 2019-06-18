@@ -8,6 +8,7 @@
 
 import Vue from 'vue'
 import { LIST, CREATE, REMOVE, EDIT } from './mutation-types'
+import Transformer from '../../../utilities/transformers/api/workers/list'
 
 export const list = ({ commit }, date) => {
   return new Promise((resolve, reject) => {
@@ -74,6 +75,7 @@ export const edit = ({ commit }, worker) => {
 }
 
 export const update = ({ commit }, workerList) => {
+  let workerListCopy = Transformer.get(workerList)
   function filterWorkerList (payload) {
     for (let i in payload) {
       if (payload[i].timesheet.plan.length > 0) {
@@ -95,7 +97,7 @@ export const update = ({ commit }, workerList) => {
       timesheet: filterWorkersList[i].timesheet
     })
       .then(res => {
-        commit(EDIT, { id: res.data.id, data: res.data })
+        commit(EDIT, { id: res.data.id, data: workerListCopy[i] })
       })
       .catch(error => {
         return error

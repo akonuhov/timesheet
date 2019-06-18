@@ -48,34 +48,39 @@
             <tr>
               <td v-for="(item, index) in props.item.timesheet.plan[0].days" v-bind:key="index" align="center">
                 <v-edit-dialog
-                  :return-value.sync="item.status"
+                  @open="item._status =  item.status"
+                  @cancel="item.status = item._status || item.status"
+                  @save="item.status =  item._status || item.status"
                   lazy
                 > {{ item.status }}
                   <template v-slot:input>
-                    <v-text-field
-                      v-model="item.status"
-                      @input="onInputTimesheetPlanStatus"
+                    <v-select
+                      slot="input"
+                      :items="statusSelect"
+                      v-model="item._status"
+                      v-on:change="item.status = item._status"
                       label="Редактировать"
-                      single-line
-                      counter
-                    ></v-text-field>
+                    ></v-select>
                   </template>
                 </v-edit-dialog>
               </td>
             </tr>
             <tr>
-              <td v-for="(item, index) in props.item.timesheet.plan[0].days" v-bind:key="index" align="center">
+              <td v-for="(day, index) in props.item.timesheet.plan[0].days" v-bind:key="index" align="center">
                 <v-edit-dialog
-                  :return-value.sync="item.time"
+                  @open="day._time =  day.time"
+                  @cancel="day.time = day._time || day.time"
+                  @save="day.time =  day._time || day.time"
                   lazy
-                > {{ item.time }}
+                > {{ day.time }}
                   <template v-slot:input>
-                    <v-text-field
-                      v-model="item.time"
+                    <v-select
+                      slot="input"
+                      :items="timeSelect"
+                      v-model="day._time"
+                      v-on:change="day.time = day._time"
                       label="Редактировать"
-                      single-line
-                      counter
-                    ></v-text-field>
+                    ></v-select>
                   </template>
                 </v-edit-dialog>
               </td>
@@ -83,16 +88,19 @@
             <tr>
               <td v-for="(item, index) in props.item.timesheet.actual[0].days" v-bind:key="index" align="center">
                 <v-edit-dialog
-                  :return-value.sync="item.status"
+                  @open="item._status =  item.status"
+                  @cancel="item.status = item._status || item.status"
+                  @save="item.status =  item._status || item.status"
                   lazy
                 > {{ item.status }}
                   <template v-slot:input>
-                    <v-text-field
-                      v-model="item.status"
+                    <v-select
+                      slot="input"
+                      :items="statusSelect"
+                      v-model="item._status"
+                      v-on:change="item.status = item._status"
                       label="Редактировать"
-                      single-line
-                      counter
-                    ></v-text-field>
+                    ></v-select>
                   </template>
                 </v-edit-dialog>
               </td>
@@ -100,16 +108,19 @@
             <tr>
               <td v-for="(day, index) in props.item.timesheet.actual[0].days" v-bind:key="index" align="center">
                 <v-edit-dialog
-                  :return-value.sync="day.time"
+                  @open="day._time =  day.time"
+                  @cancel="day.time = day._time || day.time"
+                  @save="day.time =  day._time || day.time"
                   lazy
                 > {{ day.time }}
                   <template v-slot:input>
-                    <v-text-field
-                      v-model="day.time"
+                    <v-select
+                      slot="input"
+                      :items="timeSelect"
+                      v-model="day._time"
+                      v-on:change="day.time = day._time"
                       label="Редактировать"
-                      single-line
-                      counter
-                    ></v-text-field>
+                    ></v-select>
                   </template>
                 </v-edit-dialog>
               </td>
@@ -121,16 +132,16 @@
           <table>
             <tbody>
             <tr>
-              <td align="center">0</td>
+              <td align="center">{{ getCountWorkDay(props.item.timesheet.plan[0].days) }}</td>
             </tr>
             <tr>
-              <td align="center">0</td>
+              <td align="center">{{ getCountWorkTime(props.item.timesheet.plan[0].days) }}</td>
             </tr>
             <tr>
-              <td align="center">0</td>
+              <td align="center">{{ getCountWorkDay(props.item.timesheet.actual[0].days) }}</td>
             </tr>
             <tr>
-              <td align="center">0</td>
+              <td align="center">{{ getCountWorkTime(props.item.timesheet.actual[0].days) }}</td>
             </tr>
             </tbody>
           </table>
@@ -155,7 +166,15 @@ export default {
         { text: 'Табель', value: 'type', align: 'center', sortable: false },
         { text: 'День/Часы', value: 'days', align: 'center', sortable: false },
         { text: 'Итого', value: 'total', align: 'center, sortable: false' }
-      ]
+      ],
+      statusSelect: [
+        { text: 'Явка', value: 'Я' },
+        { text: 'Командировка', value: 'К' },
+        { text: 'Отпуск', value: 'О' },
+        { text: 'Прогул', value: 'П' },
+        { text: 'Выходной', value: 'В' }
+      ],
+      timeSelect: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24']
     }
   },
   computed: {
@@ -164,8 +183,17 @@ export default {
     }
   },
   methods: {
-    onInputTimesheetPlanStatus () {
-      // this.$store.commit('Worker/UPDATE', this.workersList)
+    getCountWorkDay (days) {
+      let filterDays = days.filter(item => item.status === 'Я')
+      return filterDays.length
+    },
+    getCountWorkTime (days) {
+      let filterDays = days.filter(item => item.time !== null)
+      let countTime = 0
+      for (let i = 0; i < filterDays.length; i++) {
+        countTime = countTime + Number.parseInt(filterDays[i].time)
+      }
+      return countTime
     }
   }
 }

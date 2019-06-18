@@ -41,7 +41,7 @@
       <v-btn icon>
         <v-icon>search</v-icon>
       </v-btn>
-      <v-btn icon>
+      <v-btn icon @click="onClickRefresh">
         <v-icon>refresh</v-icon>
       </v-btn>
       <v-btn icon>
@@ -85,6 +85,9 @@ export default {
       this.$store.dispatch('Authorization/logout').then(() => {
         this.$router.push('/authorization')
       })
+    },
+    onClickRefresh () {
+      this.$store.dispatch('Authorization/check')
     }
   }
 }
