@@ -10,11 +10,11 @@ import Vue from 'vue'
 import { LIST, CREATE, REMOVE, EDIT } from './mutation-types'
 import Transformer from '../../../utilities/transformers/api/workers/list'
 
-export const list = ({ commit }, date) => {
+export const list = ({ commit }) => {
   return new Promise((resolve, reject) => {
     Vue.$http.get('/api/workers')
       .then(res => {
-        commit(LIST, { res: res, date: date || null })
+        commit(LIST, { res: res })
         resolve(res)
       })
       .catch(error => {
