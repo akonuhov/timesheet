@@ -90,8 +90,8 @@ export const update = ({ commit }, workerList) => {
     }
     return payload
   }
-  let filterWorkersList = filterWorkerList(workerList)
   let workerListCopy = Transformer.get(workerList)
+  let filterWorkersList = filterWorkerList(workerListCopy)
   for (let i = 0; i < filterWorkersList.length; i++) {
     Vue.$http.put('/api/workers/' + filterWorkersList[i].id, {
       in: filterWorkersList[i].in,
