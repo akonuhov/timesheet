@@ -3,6 +3,8 @@
     <v-data-table
       :headers="headers"
       :items="getSelectSubdivisionWorkerGroup"
+      :loading="loadingTableStatus"
+      :rows-per-page-items="[25, 50, 75, 100]"
     >
       <template v-slot:items="props">
         <td align="center">{{ props.index + 1 }}</td>
@@ -39,26 +41,22 @@
           <table class="v-table">
             <thead>
             <tr>
-              <th v-for="(item, index) in props.item.timesheet.plan[0].days" v-bind:key="index" align="center">
-                {{ item.number }}
+              <th v-for="(day, index) in props.item.timesheet.plan[0].days" v-bind:key="index" align="center">
+                {{ day.number }}
               </th>
             </tr>
             </thead>
             <tbody>
             <tr>
-              <td v-for="(item, index) in props.item.timesheet.plan[0].days" v-bind:key="index" align="center">
+              <td v-for="(day, index) in props.item.timesheet.plan[0].days" v-bind:key="index" align="center">
                 <v-edit-dialog
-                  @open="item._status =  item.status"
-                  @cancel="item.status = item._status || item.status"
-                  @save="item.status =  item._status || item.status"
                   lazy
-                > {{ item.status }}
+                > {{ day.status }}
                   <template v-slot:input>
                     <v-select
                       slot="input"
                       :items="statusSelect"
-                      v-model="item._status"
-                      v-on:change="item.status = item._status"
+                      v-model="day.status"
                       label="Редактировать"
                     ></v-select>
                   </template>
@@ -68,37 +66,13 @@
             <tr>
               <td v-for="(day, index) in props.item.timesheet.plan[0].days" v-bind:key="index" align="center">
                 <v-edit-dialog
-                  @open="day._time =  day.time"
-                  @cancel="day.time = day._time || day.time"
-                  @save="day.time =  day._time || day.time"
                   lazy
                 > {{ day.time }}
                   <template v-slot:input>
                     <v-select
                       slot="input"
                       :items="timeSelect"
-                      v-model="day._time"
-                      v-on:change="day.time = day._time"
-                      label="Редактировать"
-                    ></v-select>
-                  </template>
-                </v-edit-dialog>
-              </td>
-            </tr>
-            <tr>
-              <td v-for="(item, index) in props.item.timesheet.actual[0].days" v-bind:key="index" align="center">
-                <v-edit-dialog
-                  @open="item._status =  item.status"
-                  @cancel="item.status = item._status || item.status"
-                  @save="item.status =  item._status || item.status"
-                  lazy
-                > {{ item.status }}
-                  <template v-slot:input>
-                    <v-select
-                      slot="input"
-                      :items="statusSelect"
-                      v-model="item._status"
-                      v-on:change="item.status = item._status"
+                      v-model="day.time"
                       label="Редактировать"
                     ></v-select>
                   </template>
@@ -108,17 +82,29 @@
             <tr>
               <td v-for="(day, index) in props.item.timesheet.actual[0].days" v-bind:key="index" align="center">
                 <v-edit-dialog
-                  @open="day._time =  day.time"
-                  @cancel="day.time = day._time || day.time"
-                  @save="day.time =  day._time || day.time"
+                  lazy
+                > {{ day.status }}
+                  <template v-slot:input>
+                    <v-select
+                      slot="input"
+                      :items="statusSelect"
+                      v-model="day.status"
+                      label="Редактировать"
+                    ></v-select>
+                  </template>
+                </v-edit-dialog>
+              </td>
+            </tr>
+            <tr>
+              <td v-for="(day, index) in props.item.timesheet.actual[0].days" v-bind:key="index" align="center">
+                <v-edit-dialog
                   lazy
                 > {{ day.time }}
                   <template v-slot:input>
                     <v-select
                       slot="input"
                       :items="timeSelect"
-                      v-model="day._time"
-                      v-on:change="day.time = day._time"
+                      v-model="day.time"
                       label="Редактировать"
                     ></v-select>
                   </template>
@@ -168,14 +154,19 @@ export default {
         { text: 'Итого', value: 'total', align: 'center, sortable: false' }
       ],
       statusSelect: [
+        { text: 'Не выбранно', value: null },
         { text: 'Явка', value: 'Я' },
         { text: 'Командировка', value: 'К' },
         { text: 'Отпуск', value: 'О' },
         { text: 'Прогул', value: 'П' },
         { text: 'Выходной', value: 'В' }
       ],
-      timeSelect: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24']
+      timeSelect: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24'],
+      loadingTableStatus: true
     }
+  },
+  created () {
+    this.loadingTableStatus = false
   },
   computed: {
     getSelectSubdivisionWorkerGroup () {
@@ -199,6 +190,39 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss">
+.timesheet {
+  .v-menu {
+    &__activator {
+      justify-content: center;
+      min-width: 20px;
+      &:hover {
+        background-color: #B0BEC5;
+        & * {
+          color: #ffffff;
+        }
+      }
+    }
+  }
+  table {
+    &.v-table {
+      tbody {
+        tr:hover:not(.v-datatable__expand-row) {
+          background-color: #ECEFF1;
+        }
+        td {
+          padding: 0;
+          min-width: 40px;
+        }
+      }
 
+      thead {
+        th {
+          padding: 0;
+          min-width: 40px;
+        }
+      }
+    }
+  }
+}
 </style>

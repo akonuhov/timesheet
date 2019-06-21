@@ -47,6 +47,7 @@
       :headers="headers"
       :items="getSubdivisionsList"
       :search="searchSubdivisions"
+      :rows-per-page-items="[25, 50, 75, 100]"
       class="elevation-1"
     >
       <template v-slot:items="props">

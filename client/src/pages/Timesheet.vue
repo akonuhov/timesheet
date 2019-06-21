@@ -24,6 +24,7 @@
               <v-select
                 v-model="selectedItemSubdivisionList"
                 :items="getSubdivisionList"
+                :disabled="statusDialog === 'edit'"
                 item-text="name"
                 label="Подразделение"
                 prepend-icon="work"
@@ -42,6 +43,7 @@
                 <template v-slot:activator="{ on }">
                   <v-text-field
                     v-model="setTimesheetDate"
+                    :disabled="statusDialog === 'edit'"
                     label="Дата"
                     prepend-icon="event"
                     v-on="on"
@@ -71,6 +73,7 @@
     <v-data-table
       :headers="headersTableTimesheet"
       :items="getTimesheetList"
+      :rows-per-page-items="[25, 50, 75, 100]"
       class="elevation-1"
     >
       <template v-slot:items="props">
@@ -171,7 +174,7 @@ export default {
       this.subdivisionWorkerGroup = this.getterSelectSubdivisionWorkerGroup(this.selectedItemSubdivisionList, this.setTimesheetDate)
     },
     onClickRemoveTimesheet (id) {
-      confirm('Вы точно хотите удалить этого сотрудника?') && this.$store.dispatch('Timesheet/remove', id)
+      confirm('Вы точно хотите удалить этот табель?') && this.$store.dispatch('Timesheet/remove', id)
     },
     onClickCreateTimesheet () {
       this.statusDialog = 'create'
@@ -193,25 +196,6 @@ export default {
     &--calendar &__content {
       padding-left: 0;
       padding-right: 0;
-    }
-  }
-  .timesheet {
-    table {
-      &.v-table {
-        tbody {
-          td {
-            padding-left: 10px;
-            padding-right: 10px;
-          }
-        }
-
-        thead {
-          th {
-            padding-left: 10px;
-            padding-right: 10px;
-          }
-        }
-      }
     }
   }
 </style>
