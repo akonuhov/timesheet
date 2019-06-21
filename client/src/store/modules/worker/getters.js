@@ -25,21 +25,21 @@ export default {
   getSelectSubdivisionWorkerGroup: state => (name, date) => {
     if (name) {
       let stateListFilter = Transformer.get(state.list.filter(item => item.subdivision_number === name))
-      const schemaTimesheet = {
-        plan: [
-          {
-            date: date,
-            days: getDays(date)
-          }
-        ],
-        actual: [
-          {
-            date: date,
-            days: getDays(date)
-          }
-        ]
-      }
       for (let i in stateListFilter) {
+        let schemaTimesheet = {
+          plan: [
+            {
+              date: date,
+              days: getDays(date)
+            }
+          ],
+          actual: [
+            {
+              date: date,
+              days: getDays(date)
+            }
+          ]
+        }
         if (stateListFilter[i].timesheet.plan.length > 0 && stateListFilter[i].timesheet.plan.find(month => month.date === date)) {
           for (let j in stateListFilter[i].timesheet.plan) {
             if (stateListFilter[i].timesheet.plan[j].days.length > 0) {

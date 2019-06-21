@@ -75,12 +75,15 @@ export const edit = ({ commit }, worker) => {
 }
 
 export const update = ({ commit }, workerList) => {
-  let workerListCopy = Transformer.get(workerList)
   function filterWorkerList (payload) {
     for (let i in payload) {
       if (payload[i].timesheet.plan.length > 0) {
         for (let j in payload[i].timesheet.plan) {
           payload[i].timesheet.plan[j].days = payload[i].timesheet.plan[j].days.filter(item => item.status !== null)
+        }
+      }
+      if (payload[i].timesheet.actual.length > 0) {
+        for (let j in payload[i].timesheet.actual) {
           payload[i].timesheet.actual[j].days = payload[i].timesheet.actual[j].days.filter(item => item.status !== null)
         }
       }
@@ -88,7 +91,8 @@ export const update = ({ commit }, workerList) => {
     return payload
   }
   let filterWorkersList = filterWorkerList(workerList)
-  for (let i = 0; i <= filterWorkersList.length; i++) {
+  let workerListCopy = Transformer.get(workerList)
+  for (let i = 0; i < filterWorkersList.length; i++) {
     Vue.$http.put('/api/workers/' + filterWorkersList[i].id, {
       in: filterWorkersList[i].in,
       subdivision_number: filterWorkersList[i].subdivision_number,
